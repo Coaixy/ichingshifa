@@ -209,3 +209,102 @@ export function getMovingYaoPositions(yaoString: YaoString): number[] {
   }
   return positions;
 }
+
+/**
+ * 数字转八卦三爻
+ * 1=乾(777), 2=兑(778), 3=离(787), 4=震(788)
+ * 5=巽(877), 6=坎(878), 7=艮(887), 8=坤(888)
+ */
+const NUM_TO_TRIGRAM: Record<number, string> = {
+  1: '777', 2: '778', 3: '787', 4: '788',
+  5: '877', 6: '878', 7: '887', 8: '888',
+};
+
+/**
+ * 取余并处理 0 的情况
+ */
+function modWithZero(num: number, divisor: number): number {
+  const remainder = num % divisor;
+  return remainder === 0 ? divisor : remainder;
+}
+
+/**
+ * 根据上下卦数字和动爻位置生成爻字符串
+ */
+function buildYaoString(upperNum: number, lowerNum: number, dongYao: number): YaoString {
+  // 组合6爻（下卦在前，上卦在后）
+  const yaoArray = (NUM_TO_TRIGRAM[lowerNum] + NUM_TO_TRIGRAM[upperNum])
+    .split('')
+    .map(c => parseInt(c, 10));
+
+  // 设置动爻
+  const dongIndex = dongYao - 1;
+  if (yaoArray[dongIndex] === 7) {
+    yaoArray[dongIndex] = 9; // 少阳变老阳
+  } else if (yaoArray[dongIndex] === 8) {
+    yaoArray[dongIndex] = 6; // 少阴变老阴
+  }
+
+  return yaoArray.join('');
+}
+
+/**
+ * 三数起卦
+ *
+ * 第1数/8 余数为上卦，第2数/8 余数为下卦，第3数/6 余数为动爻
+ *
+ * @param num1 - 第一个数字（上卦）
+ * @param num2 - 第二个数字（下卦）
+ * @param num3 - 第三个数字（动爻）
+ * @returns 6位爻字符串
+ *
+ * @example
+ * threeNumberQiGua(5, 8, 3);  // 上卦5=巽，下卦8=坤，动爻3
+ */
+export function threeNumberQiGua(num1: number, num2: number, num3: number): YaoString {
+  const upperNum = modWithZero(num1, 8);
+  const lowerNum = modWithZero(num2, 8);
+  const dongYao = modWithZero(num3, 6);
+
+  return buildYaoString(upperNum, lowerNum, dongYao);
+}
+
+/**
+ * 数组起卦
+ *
+ * 一组数字按奇偶分割：
+ * - 偶数个：前半为上卦，后半为下卦
+ * - 奇数个：前半少一个数字（如5个数字，前2后3）
+ * - 上卦 = 前半数字之和 % 8
+ * - 下卦 = 后半数字之和 % 8
+ * - 动爻 = (上卦数 + 下卦数 + 时辰数) % 6
+ *
+ * @param numbers - 数字数组（至少2个）
+ * @param hourZhiIndex - 时辰地支序号（子=1, 丑=2, ...亥=12），用于计算动爻
+ * @returns 6位爻字符串
+ *
+ * @example
+ * numberArrayQiGua([3, 8, 4, 2], 5);     // 4个数字，前2后2，时辰5
+ * numberArrayQiGua([1, 2, 3, 4, 5], 8);  // 5个数字，前2后3，时辰8
+ */
+export function numberArrayQiGua(numbers: number[], hourZhiIndex: number): YaoString {
+  if (numbers.length < 2) {
+    throw new Error('数组起卦至少需要2个数字');
+  }
+
+  const len = numbers.length;
+  // 奇数个：前半少一个；偶数个：平分
+  const splitIndex = Math.floor(len / 2);
+
+  const firstHalf = numbers.slice(0, splitIndex);
+  const secondHalf = numbers.slice(splitIndex);
+
+  const firstSum = firstHalf.reduce((a, b) => a + b, 0);
+  const secondSum = secondHalf.reduce((a, b) => a + b, 0);
+
+  const upperNum = modWithZero(firstSum, 8);
+  const lowerNum = modWithZero(secondSum, 8);
+  const dongYao = modWithZero(upperNum + lowerNum + hourZhiIndex, 6);
+
+  return buildYaoString(upperNum, lowerNum, dongYao);
+}

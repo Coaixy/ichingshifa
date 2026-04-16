@@ -22,6 +22,8 @@ export {
   dayan,
   timeQiGua,
   manualQiGua,
+  threeNumberQiGua,
+  numberArrayQiGua,
   getZhiGua,
   getHuGua,
   isMovingYao,
