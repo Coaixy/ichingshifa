@@ -7,7 +7,7 @@ import type {
   DivinationOptions, WuXing, LiuQin, LiuShou, FuShenData
 } from '../types';
 import { TIAN_GAN, DI_ZHI, WU_XING } from '../data/jiazi';
-import { TRIGRAM_TO_BAGUA, YAO_STRING_TO_GUA } from '../data/gua64';
+import { CODE_TO_BAGUA, YAO_STRING_TO_GUA } from '../data/gua64';
 import { BAGUA_LIST, NAJIA_LOWER, NAJIA_UPPER } from '../data/najia';
 import {
   GUA_PALACE, GUA_PALACE_LEVEL, PALACE_WUXING,
@@ -44,8 +44,8 @@ export function getGuaName(yaoString: YaoString): string {
   const lower = staticYao.slice(0, 3);
   const upper = staticYao.slice(3, 6);
 
-  const lowerGua = TRIGRAM_TO_BAGUA[lower];
-  const upperGua = TRIGRAM_TO_BAGUA[upper];
+  const lowerGua = CODE_TO_BAGUA[lower];
+  const upperGua = CODE_TO_BAGUA[upper];
 
   if (lowerGua && upperGua) {
     // 通过上下卦组合查找64卦名
@@ -104,8 +104,8 @@ export function decodeGua(
 
   // 获取纳甲数据
   const staticYao = yaoString.replace(/9/g, '7').replace(/6/g, '8');
-  const lowerTrigram = TRIGRAM_TO_BAGUA[staticYao.slice(0, 3)] || '乾';
-  const upperTrigram = TRIGRAM_TO_BAGUA[staticYao.slice(3, 6)] || '乾';
+  const lowerTrigram = CODE_TO_BAGUA[staticYao.slice(0, 3)] || '乾';
+  const upperTrigram = CODE_TO_BAGUA[staticYao.slice(3, 6)] || '乾';
 
   const lowerNajiaRaw = (NAJIA_LOWER as any)[lowerTrigram] || [];
   const upperNajiaRaw = (NAJIA_UPPER as any)[upperTrigram] || [];
@@ -236,8 +236,8 @@ function findFuShen(
 
   // 获取本宫纯卦的纳甲
   const pureCode = PALACE_PURE_CODE[palace] || '777777';
-  const pureLowerTrigram = TRIGRAM_TO_BAGUA[pureCode.slice(0, 3)] || '乾';
-  const pureUpperTrigram = TRIGRAM_TO_BAGUA[pureCode.slice(3, 6)] || '乾';
+  const pureLowerTrigram = CODE_TO_BAGUA[pureCode.slice(0, 3)] || '乾';
+  const pureUpperTrigram = CODE_TO_BAGUA[pureCode.slice(3, 6)] || '乾';
 
   const pureLowerNajiaRaw = (NAJIA_LOWER as any)[pureLowerTrigram] || [];
   const pureUpperNajiaRaw = (NAJIA_UPPER as any)[pureUpperTrigram] || [];

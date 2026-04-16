@@ -57,17 +57,21 @@ export function ganZhiToWuXing(ganOrZhi: string): WuXing {
 }
 
 /**
- * 获取五行生克关系
- * @param a 主体五行（爻的五行）
- * @param b 参照五行（宫的五行）
- * @returns 关系描述
+ * 获取五行生克关系（从宫的视角）
+ * @param yaoWx 爻的五行
+ * @param gongWx 宫的五行
+ * @returns 关系描述（从宫的视角）
  */
-export function getWuXingRelation(a: WuXing, b: WuXing): WuXingRelation {
-  if (a === b) return '比和';
-  if (SHENG[b] === a) return '生我';  // b生a，a被生
-  if (SHENG[a] === b) return '我生';  // a生b
-  if (KE[b] === a) return '尅我';     // b克a，a被克
-  if (KE[a] === b) return '我尅';     // a克b
+export function getWuXingRelation(yaoWx: WuXing, gongWx: WuXing): WuXingRelation {
+  if (yaoWx === gongWx) return '比和';
+  // 爻生宫 = 有人生我 = 生我 = 父母
+  if (SHENG[yaoWx] === gongWx) return '生我';
+  // 宫生爻 = 我生他 = 我生 = 子孙
+  if (SHENG[gongWx] === yaoWx) return '我生';
+  // 爻克宫 = 有人克我 = 尅我 = 官鬼
+  if (KE[yaoWx] === gongWx) return '尅我';
+  // 宫克爻 = 我克他 = 我尅 = 妻财
+  if (KE[gongWx] === yaoWx) return '我尅';
   return '比和'; // 不应该到这里
 }
 

@@ -45,6 +45,18 @@ export const BAGUA_XIANG = {
   "8": "地"
 } as const;
 
+// 三位数字码到八卦名的映射
+export const CODE_TO_BAGUA: Record<string, string> = {
+  "777": "乾",
+  "778": "兑",
+  "787": "离",
+  "788": "震",
+  "877": "巽",
+  "878": "坎",
+  "887": "艮",
+  "888": "坤"
+} as const;
+
 export const GUA64_ORDER = [
   "乾",
   "姤",

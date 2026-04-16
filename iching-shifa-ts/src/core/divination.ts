@@ -101,12 +101,12 @@ export function timeQiGua(
   const cm = lunarMonth;
   const cd = lunarDay;
 
-  // 上卦 = (年支 + 月 + 日) % 8
-  let upperNum = (yzCode + cm + cd) % 8;
+  // 上卦 = (年支 + 月 + 日 + 时支) % 8
+  let upperNum = (yzCode + cm + cd + hzCode) % 8;
   if (upperNum === 0) upperNum = 8;
 
-  // 下卦 = (年支 + 月 + 日 + 时支) % 8
-  let lowerNum = (yzCode + cm + cd + hzCode) % 8;
+  // 下卦 = (年支 + 月 + 日) % 8
+  let lowerNum = (yzCode + cm + cd) % 8;
   if (lowerNum === 0) lowerNum = 8;
 
   // 动爻 = (年支 + 月 + 日 + 时支) % 6
