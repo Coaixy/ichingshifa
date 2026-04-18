@@ -1,6 +1,7 @@
 import { describe, test, expect } from 'bun:test';
 import {
   dayan,
+  lueshifa,
   manualQiGua,
   decodePan,
   getGuaName,
@@ -21,6 +22,24 @@ describe('起卦', () => {
     expect(manualQiGua('678987')).toBe('678987');
     expect(() => manualQiGua('12345')).toThrow();
     expect(() => manualQiGua('777777a')).toThrow();
+  });
+});
+
+describe('略筮法', () => {
+  test('返回6位爻字符串', () => {
+    const yao = lueshifa();
+    expect(yao).toHaveLength(6);
+    expect(yao).toMatch(/^[6789]{6}$/);
+  });
+
+  test('恰好包含一个动爻', () => {
+    const yao = lueshifa();
+    expect(countMovingYao(yao)).toBe(1);
+  });
+
+  test('多次调用结果不全相同', () => {
+    const results = new Set(Array.from({ length: 20 }, () => lueshifa()));
+    expect(results.size).toBeGreaterThan(1);
   });
 });
 

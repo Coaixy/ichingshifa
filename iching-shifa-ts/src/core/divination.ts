@@ -249,6 +249,34 @@ function buildYaoString(upperNum: number, lowerNum: number, dongYao: number): Ya
 }
 
 /**
+ * 略筮法 - 单次揲数
+ * 49根蓍草随机分左右，从右堆挂一，左堆按 groupSize 揲数取余
+ */
+function lueshifaOnce(groupSize: number): number {
+  const left = 1 + Math.floor(Math.random() * 48);
+  const remainder = left % groupSize;
+  return remainder === 0 ? 1 : remainder + 1;
+}
+
+/**
+ * 略筮法（简易蓍草法）
+ *
+ * 用49根蓍草进行三次揲数起卦：
+ * - 揲8得下卦（1~8对应八卦）
+ * - 揲8得上卦（1~8对应八卦）
+ * - 揲6得动爻（1~6对应爻位）
+ *
+ * @returns 6位爻字符串（6/7/8/9），含一个动爻
+ */
+export function lueshifa(): YaoString {
+  const lowerNum = lueshifaOnce(8);
+  const upperNum = lueshifaOnce(8);
+  const dongYao  = lueshifaOnce(6);
+
+  return buildYaoString(upperNum, lowerNum, dongYao);
+}
+
+/**
  * 三数起卦
  *
  * 第1数/8 余数为上卦，第2数/8 余数为下卦，第3数/6 余数为动爻

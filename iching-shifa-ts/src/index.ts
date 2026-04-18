@@ -20,6 +20,7 @@
 // 起卦方法
 export {
   dayan,
+  lueshifa,
   timeQiGua,
   manualQiGua,
   threeNumberQiGua,
