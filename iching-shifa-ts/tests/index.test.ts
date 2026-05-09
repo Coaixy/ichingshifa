@@ -9,6 +9,7 @@ import {
   getHuGua,
   countMovingYao,
 } from '../src/index';
+import { buildShenShaMap } from '../src/core/shensha';
 
 describe('起卦', () => {
   test('大衍筮法返回6位爻字符串', () => {
@@ -117,6 +118,81 @@ describe('完整排盘', () => {
   });
 });
 
+describe('神煞', () => {
+  test('按规则生成独立 map', () => {
+    const yao = (position: number, diZhi: string, naJia: string) => ({
+      position,
+      diZhi,
+      naJia,
+    });
+
+    const shenSha = buildShenShaMap('甲', '申', '寅', [
+      {
+        guaKey: 'benGua',
+        yaoList: [
+          yao(1, '寅', '甲寅'),
+          yao(2, '酉', '乙酉'),
+          yao(3, '辰', '丙辰'),
+          yao(4, '午', '丁午'),
+          yao(5, '子', '戊子'),
+          yao(6, '卯', '己卯'),
+        ],
+      },
+      {
+        guaKey: 'zhiGua',
+        yaoList: [
+          yao(1, '丑', '甲丑'),
+          yao(2, '未', '乙未'),
+          yao(3, '巳', '丙巳'),
+          yao(4, '申', '丁申'),
+          yao(5, '亥', '戊亥'),
+          yao(6, '戌', '己戌'),
+        ],
+      },
+      {
+        guaKey: 'huGua',
+        yaoList: [
+          yao(1, '酉', '甲酉'),
+          yao(2, '寅', '乙寅'),
+          yao(3, '未', '丙未'),
+          yao(4, '寅', '丁寅'),
+          yao(5, '辰', '戊辰'),
+          yao(6, '巳', '己巳'),
+        ],
+      },
+    ]);
+
+    expect(Object.keys(shenSha)).toEqual([
+      '驿马',
+      '桃花',
+      '华盖',
+      '天医',
+      '天喜',
+      '天马',
+      '天乙贵人',
+      '禄神',
+      '文昌',
+    ]);
+    expect(shenSha.驿马).toEqual({
+      targetDiZhi: ['寅'],
+      matches: [
+        { guaKey: 'benGua', position: 1, diZhi: '寅', naJia: '甲寅' },
+        { guaKey: 'huGua', position: 2, diZhi: '寅', naJia: '乙寅' },
+        { guaKey: 'huGua', position: 4, diZhi: '寅', naJia: '丁寅' },
+      ],
+    });
+    expect(shenSha.天医.targetDiZhi).toEqual(['丑']);
+    expect(shenSha.天喜.targetDiZhi).toEqual(['戌']);
+    expect(shenSha.天马.targetDiZhi).toEqual(['午']);
+    expect(shenSha.天乙贵人.targetDiZhi).toEqual(['丑', '未']);
+    expect(shenSha.禄神.targetDiZhi).toEqual(['寅']);
+    expect(shenSha.文昌.matches).toEqual([
+      { guaKey: 'zhiGua', position: 3, diZhi: '巳', naJia: '丙巳' },
+      { guaKey: 'huGua', position: 6, diZhi: '巳', naJia: '己巳' },
+    ]);
+  });
+});
+
 describe('JSON输出样例', () => {
   test('完整JSON结构', () => {
     const result = decodePan('787978', {
@@ -135,6 +211,8 @@ describe('JSON输出样例', () => {
     expect(result).toHaveProperty('benGua');
     expect(result).toHaveProperty('zhiGua');
     expect(result).toHaveProperty('huGua');
+    expect(result).toHaveProperty('shenSha');
+    expect(Object.keys(result.shenSha)).toHaveLength(9);
     expect(result).toHaveProperty('explanation');
   });
 });

@@ -21,6 +21,7 @@ import { ganZhiToWuXing, getWuXingRelation, wuXingToLiuQin } from '../utils/wuxi
 import { rotateList } from '../utils/helpers';
 import { getZhiGua, getHuGua, countMovingYao, getMovingYaoPositions } from './divination';
 import { solarToLunar, calcXunKong, getCurrentSolarTerm } from './lunar';
+import { buildShenShaMap } from './shensha';
 
 /**
  * 查找卦名
@@ -382,6 +383,17 @@ export function decodePan(
   const huYaoString = getHuGua(yaoString);
   const huGua = decodeGua(huYaoString, dayGZ, true);
 
+  const shenSha = buildShenShaMap(
+    lunar.dayGanZhi.tian,
+    lunar.dayGanZhi.di,
+    lunar.monthGanZhi.di,
+    [
+      { guaKey: 'benGua', yaoList: benGua.yaoList },
+      { guaKey: 'zhiGua', yaoList: zhiGua.yaoList },
+      { guaKey: 'huGua', yaoList: huGua.yaoList },
+    ]
+  );
+
   // 动爻解释
   const dongYaoCount = countMovingYao(yaoString);
   const explanation = buildExplanation(
@@ -409,6 +421,7 @@ export function decodePan(
     dayKong,
     hourKong,
     monthJian,
+    shenSha,
     benGua,
     zhiGua,
     huGua,

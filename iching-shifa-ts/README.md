@@ -8,6 +8,7 @@
 - **时间起卦** - 按年月日时四柱起卦
 - **手动输入起卦** - 输入6位爻值字符串（6/7/8/9）
 - **纳甲排盘** - 完整的六爻排盘（本卦/之卦/互卦、六亲、六兽、世应、伏神等）
+- **神煞排盘** - 按日支/月令/季节/日干计算神煞，并输出独立 JSON 字段
 
 ## 安装
 
@@ -82,6 +83,7 @@ interface PanResult {
   dayKong: string;      // 日空
   hourKong: string;     // 时空
   monthJian: string;    // 月建
+  shenSha: ShenShaMap;  // 神煞（独立 map）
   benGua: GuaPan;       // 本卦
   zhiGua: GuaPan;       // 之卦
   huGua: GuaPan;        // 互卦
@@ -89,6 +91,16 @@ interface PanResult {
   dongYaoCount: number; // 动爻数
   explanation: string;  // 断卦说明
 }
+
+type ShenShaMap = Record<string, {
+  targetDiZhi: string[];
+  matches: {
+    guaKey: 'benGua' | 'zhiGua' | 'huGua';
+    position: number;
+    diZhi: string;
+    naJia: string;
+  }[];
+}>;
 
 interface GuaPan {
   guaName: string;      // 卦名
@@ -138,10 +150,10 @@ bun test --watch
 ```bash
 $ bun test
 
- 12 pass
+ 16 pass
  0 fail
- 67 expect() calls
-Ran 12 tests across 1 file. [33.00ms]
+ 81 expect() calls
+Ran 16 tests across 1 file. [107.00ms]
 ```
 
 ## 许可
