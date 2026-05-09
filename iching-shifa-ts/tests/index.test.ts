@@ -116,6 +116,33 @@ describe('完整排盘', () => {
     expect(result.benGua.yaoCi).toHaveLength(6);
     expect(result.benGua.tuanCi).toBeTruthy();
   });
+
+  test('伏神和旁伏神分别完整排入六爻', () => {
+    const fuShen = result.benGua.fuShen || [];
+    const pangFuShen = result.benGua.pangFuShen || [];
+
+    expect(fuShen).toHaveLength(6);
+    fuShen.forEach((item) => {
+      const hostYao = result.benGua.yaoList[item.hostYaoIndex];
+      expect(item.hostNaJia).toBe(hostYao.naJia);
+      expect(item.feiWuXing).toBe(hostYao.wuXing);
+    });
+    expect(fuShen[0].fuNaJia).toBe('戊寅');
+
+    expect(pangFuShen).toHaveLength(6);
+    pangFuShen.forEach((item) => {
+      const hostYao = result.benGua.yaoList[item.hostYaoIndex];
+      expect(item.hostNaJia).toBe(hostYao.naJia);
+      expect(item.feiWuXing).toBe(hostYao.wuXing);
+    });
+    expect(pangFuShen[0].fuNaJia).toBe('己卯');
+    expect(pangFuShen[0].fuLiuQin).toBe('父母');
+
+    expect(result.zhiGua.fuShen).toBeUndefined();
+    expect(result.huGua.fuShen).toBeUndefined();
+    expect(result.zhiGua.pangFuShen).toBeUndefined();
+    expect(result.huGua.pangFuShen).toBeUndefined();
+  });
 });
 
 describe('神煞', () => {

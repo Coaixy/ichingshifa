@@ -113,6 +113,7 @@ interface GuaPan {
   tuanCi: string;       // 彖辞
   shenYao?: number;     // 身爻
   fuShen?: FuShenData[];// 伏神
+  pangFuShen?: FuShenData[];// 旁伏神
 }
 
 interface YaoData {
@@ -150,10 +151,10 @@ bun test --watch
 ```bash
 $ bun test
 
- 16 pass
+ 17 pass
  0 fail
- 81 expect() calls
-Ran 16 tests across 1 file. [107.00ms]
+ 114 expect() calls
+Ran 17 tests across 1 file. [100.00ms]
 ```
 
 ## 许可

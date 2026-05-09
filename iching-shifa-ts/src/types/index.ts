@@ -104,6 +104,7 @@ export interface GuaPan {
   tuanCi: string;            // 彖辞
   shenYao?: number;          // 身爻位置
   fuShen?: FuShenData[];     // 伏神
+  pangFuShen?: FuShenData[]; // 旁伏神
 }
 
 /** 起卦选项 */

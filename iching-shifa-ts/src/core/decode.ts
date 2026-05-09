@@ -23,6 +23,17 @@ import { getZhiGua, getHuGua, countMovingYao, getMovingYaoPositions } from './di
 import { solarToLunar, calcXunKong, getCurrentSolarTerm } from './lunar';
 import { buildShenShaMap } from './shensha';
 
+const OPPOSITE_PALACE: Record<string, string> = {
+  '乾': '坤',
+  '坤': '乾',
+  '坎': '离',
+  '离': '坎',
+  '震': '巽',
+  '巽': '震',
+  '艮': '兑',
+  '兑': '艮',
+};
+
 /**
  * 查找卦名
  */
@@ -196,8 +207,10 @@ export function decodeGua(
 
   // 查找伏神（本卦才需要）
   let fuShen: FuShenData[] | undefined;
+  let pangFuShen: FuShenData[] | undefined;
   if (!isZhiGua) {
     fuShen = findFuShen(yaoList, palace, palaceWuXing);
+    pangFuShen = findPangFuShen(yaoList, palace);
   }
 
   return {
@@ -212,31 +225,46 @@ export function decodeGua(
     tuanCi,
     shenYao: shenYaoIndex,
     fuShen,
+    pangFuShen,
   };
 }
 
 /**
- * 查找伏神
- * 找出本卦缺少的六亲，从本宫纯卦中查找
+ * 排伏神
+ * 以本卦所屬宮的本宮純卦逐爻排入伏神，不再只補缺失的六親
  */
 function findFuShen(
   yaoList: YaoData[],
   palace: string,
   palaceWuXing: WuXing
-): FuShenData[] | undefined {
-  // 统计本卦已有的六亲
-  const existingLiuQin = new Set(yaoList.map(y => y.liuQin));
+): FuShenData[] {
+  return buildFuShenFromPalace(yaoList, palace, palaceWuXing);
+}
 
-  // 五种六亲
-  const allLiuQin: LiuQin[] = ['父母', '兄弟', '官鬼', '妻财', '子孙'];
-  const missingLiuQin = allLiuQin.filter(lq => !existingLiuQin.has(lq));
+/**
+ * 排旁伏神
+ * 以首宮卦的對宮純卦作為伏神來源，保留本卦同位爻作飛神
+ */
+function findPangFuShen(
+  yaoList: YaoData[],
+  palace: string
+): FuShenData[] {
+  const oppositePalace = OPPOSITE_PALACE[palace] || '坤';
+  const oppositeWuXing = (PALACE_WUXING[oppositePalace] || '土') as WuXing;
 
-  if (missingLiuQin.length === 0) {
-    return undefined;
-  }
+  return buildFuShenFromPalace(yaoList, oppositePalace, oppositeWuXing);
+}
 
-  // 获取本宫纯卦的纳甲
-  const pureCode = PALACE_PURE_CODE[palace] || '777777';
+/**
+ * 依指定宮的純卦生成伏神底盤
+ */
+function buildFuShenFromPalace(
+  yaoList: YaoData[],
+  sourcePalace: string,
+  sourcePalaceWuXing: WuXing
+): FuShenData[] {
+  // 取得來源宮純卦納甲，純卦六爻即為伏神來源
+  const pureCode = PALACE_PURE_CODE[sourcePalace] || '777777';
   const pureLowerTrigram = CODE_TO_BAGUA[pureCode.slice(0, 3)] || '乾';
   const pureUpperTrigram = CODE_TO_BAGUA[pureCode.slice(3, 6)] || '乾';
 
@@ -257,7 +285,7 @@ function findFuShen(
 
   const fuShenList: FuShenData[] = [];
 
-  // 遍历纯卦6爻，找缺失的六亲
+  // 逐爻排入伏神；飛神固定取本卦同一位置的爻
   for (let i = 0; i < 6; i++) {
     let najiaData: [number, number, number];
     if (i < 3) {
@@ -271,31 +299,21 @@ function findFuShen(
     const wuXing = (WU_XING[najiaData[2]] || '金') as WuXing;
     const naJia = tianGan + diZhi;
 
-    const liuQin = wuXingToLiuQin(wuXing, palaceWuXing) as LiuQin;
+    const liuQin = wuXingToLiuQin(wuXing, sourcePalaceWuXing) as LiuQin;
+    const hostYao = yaoList[i];
 
-    if (missingLiuQin.includes(liuQin)) {
-      // 找到伏神，对应的飞神是本卦同位置的爻
-      const hostYao = yaoList[i];
-
-      fuShenList.push({
-        fuLiuQin: liuQin,
-        fuNaJia: naJia,
-        fuWuXing: wuXing,
-        hostYaoIndex: i,
-        hostNaJia: hostYao.naJia,
-        feiWuXing: hostYao.wuXing,
-        relation: getWuXingRelation(wuXing, hostYao.wuXing),
-      });
-
-      // 移除已找到的六亲
-      const idx = missingLiuQin.indexOf(liuQin);
-      if (idx > -1) {
-        missingLiuQin.splice(idx, 1);
-      }
-    }
+    fuShenList.push({
+      fuLiuQin: liuQin,
+      fuNaJia: naJia,
+      fuWuXing: wuXing,
+      hostYaoIndex: i,
+      hostNaJia: hostYao.naJia,
+      feiWuXing: hostYao.wuXing,
+      relation: getWuXingRelation(wuXing, hostYao.wuXing),
+    });
   }
 
-  return fuShenList.length > 0 ? fuShenList : undefined;
+  return fuShenList;
 }
 
 /**
