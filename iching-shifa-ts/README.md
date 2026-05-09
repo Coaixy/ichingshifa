@@ -9,6 +9,7 @@
 - **手动输入起卦** - 输入6位爻值字符串（6/7/8/9）
 - **纳甲排盘** - 完整的六爻排盘（本卦/之卦/互卦、六亲、六兽、世应、伏神等）
 - **神煞排盘** - 按日支/月令/季节/日干计算神煞，并输出独立 JSON 字段
+- **纳音信息** - 本卦和之卦六爻输出 60 甲子纳音
 
 ## 安装
 
@@ -123,6 +124,7 @@ interface YaoData {
   tianGan: string;      // 天干
   diZhi: string;        // 地支
   naJia: string;        // 纳甲
+  naYin?: string;       // 纳音（本卦、之卦）
   wuXing: string;       // 五行
   liuQin: string;       // 六亲
   liuShou: string;      // 六兽
@@ -151,10 +153,10 @@ bun test --watch
 ```bash
 $ bun test
 
- 17 pass
+ 19 pass
  0 fail
- 114 expect() calls
-Ran 17 tests across 1 file. [100.00ms]
+ 127 expect() calls
+Ran 19 tests across 1 file. [28.00ms]
 ```
 
 ## 许可

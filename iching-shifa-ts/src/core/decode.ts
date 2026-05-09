@@ -17,6 +17,7 @@ import { GUA_DESCRIPTIONS } from '../data/descriptions';
 import { LIU_SHOU, LIUSHOU_START } from '../data/liushou';
 import { LIUQIN_WUXING } from '../data/liuqin';
 import { WU_XING_STARS, XINGXIU_28 } from '../data/xingxiu';
+import { getNaYin } from '../data/nayin';
 import { ganZhiToWuXing, getWuXingRelation, wuXingToLiuQin } from '../utils/wuxing';
 import { rotateList } from '../utils/helpers';
 import { getZhiGua, getHuGua, countMovingYao, getMovingYaoPositions } from './divination';
@@ -107,7 +108,8 @@ function getLiuShou(dayGan: string): LiuShou[] {
 export function decodeGua(
   yaoString: YaoString,
   dayGanZhi: string,
-  isZhiGua: boolean = false
+  isZhiGua: boolean = false,
+  includeNaYin: boolean = true
 ): GuaPan {
   const guaName = getGuaName(yaoString);
   const palace = GUA_PALACE[guaName] || '乾';
@@ -178,7 +180,7 @@ export function decodeGua(
       }
     }
 
-    yaoList.push({
+    const yaoData: YaoData = {
       position: i + 1,
       yaoValue,
       isMoving,
@@ -189,7 +191,14 @@ export function decodeGua(
       liuQin,
       liuShou,
       shiYing,
-    });
+    };
+
+    // 納音目前只掛在本卦、之卦；互卦不加，避免 JSON 誤讀為主要排盤信息
+    if (includeNaYin) {
+      yaoData.naYin = getNaYin(naJia);
+    }
+
+    yaoList.push(yaoData);
   }
 
   // 获取卦辞爻辞
@@ -399,7 +408,7 @@ export function decodePan(
   const zhiGua = decodeGua(zhiYaoString, dayGZ, true);
 
   const huYaoString = getHuGua(yaoString);
-  const huGua = decodeGua(huYaoString, dayGZ, true);
+  const huGua = decodeGua(huYaoString, dayGZ, true, false);
 
   const shenSha = buildShenShaMap(
     lunar.dayGanZhi.tian,

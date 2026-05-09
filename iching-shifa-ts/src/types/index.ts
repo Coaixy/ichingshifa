@@ -56,6 +56,7 @@ export interface YaoData {
   tianGan: string;          // 天干
   diZhi: string;            // 地支
   naJia: string;            // 纳甲（天干+地支）
+  naYin?: string;           // 納音（本卦、之卦輸出）
   wuXing: WuXing;           // 五行
   liuQin: LiuQin;           // 六亲
   liuShou: LiuShou;         // 六兽

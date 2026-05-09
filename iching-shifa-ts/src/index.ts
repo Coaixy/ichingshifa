@@ -68,6 +68,7 @@ export { LIU_QIN } from './data/liuqin';
 export { XINGXIU_28, WU_XING_STARS } from './data/xingxiu';
 export { JIEQI_NAMES } from './data/solarTerms';
 export { GUA_DESCRIPTIONS } from './data/descriptions';
+export { NAYIN_60, getNaYin } from './data/nayin';
 
 // 类型导出
 export type {

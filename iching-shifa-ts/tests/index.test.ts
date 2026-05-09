@@ -8,6 +8,7 @@ import {
   getZhiGua,
   getHuGua,
   countMovingYao,
+  getNaYin,
 } from '../src/index';
 import { buildShenShaMap } from '../src/core/shensha';
 
@@ -80,6 +81,14 @@ describe('动爻统计', () => {
   });
 });
 
+describe('纳音', () => {
+  test('60甲子纳音查询', () => {
+    expect(getNaYin('甲子')).toBe('海中金');
+    expect(getNaYin('己卯')).toBe('城头土');
+    expect(getNaYin('癸亥')).toBe('大海水');
+  });
+});
+
 describe('完整排盘', () => {
   const result = decodePan('787878', {
     year: 2024,
@@ -105,10 +114,18 @@ describe('完整排盘', () => {
     result.benGua.yaoList.forEach((yao, i) => {
       expect(yao.position).toBe(i + 1);
       expect(yao.naJia).toHaveLength(2);
+      expect(yao.naYin).toBeTruthy();
       expect(['金', '木', '水', '火', '土']).toContain(yao.wuXing);
       expect(['父母', '兄弟', '官鬼', '妻财', '子孙']).toContain(yao.liuQin);
       expect(['青龙', '朱雀', '勾陈', '腾蛇', '白虎', '玄武']).toContain(yao.liuShou);
     });
+  });
+
+  test('本卦和之卦六爻带纳音，互卦不带纳音', () => {
+    expect(result.benGua.yaoList[0].naJia).toBe('己卯');
+    expect(result.benGua.yaoList[0].naYin).toBe('城头土');
+    expect(result.zhiGua.yaoList.every(yao => Boolean(yao.naYin))).toBe(true);
+    expect(result.huGua.yaoList.every(yao => !('naYin' in yao))).toBe(true);
   });
 
   test('卦辞存在', () => {
