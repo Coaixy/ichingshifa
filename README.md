@@ -247,8 +247,6 @@ interface YaoData {
   position: number;
   yaoValue: number;
   isMoving: boolean;
-  tianGan: string;
-  diZhi: string;
   naJia: string;
   naYin?: string;
   wuXing: string;
@@ -262,6 +260,7 @@ interface YaoData {
 
 - `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
 - `huGua` 的 `yaoList` 默认不带 `naYin`
+- `yaoList` 的干支信息统一收敛在 `naJia`；若前端需要单独展示天干、地支，可再从 `naJia` 自行拆分
 - `fuShen`、`pangFuShen` 只在 `benGua` 上输出，每项保留伏神自身信息（含 `fuNaYin`）与宿主爻位；其中 `hostPosition` 与 `yaoList.position` 一致，均为 1 到 6 的爻位
 - `shenSha` 为独立字段，按“神煞名 -> 对应地支数组”输出，便于前端单独渲染或筛选
 - `explanation` 为按动爻数量生成的简要占断提示，不等同于完整断卦结论
@@ -304,8 +303,6 @@ console.log({
     "position": 1,
     "yaoValue": 7,
     "isMoving": false,
-    "tianGan": "己",
-    "diZhi": "卯",
     "naJia": "己卯",
     "naYin": "城头土",
     "wuXing": "木",

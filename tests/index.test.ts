@@ -123,6 +123,8 @@ describe('完整排盘', () => {
 
   test('本卦和之卦六爻带纳音，互卦不带纳音', () => {
     expect(result.benGua.yaoList[0].naJia).toBe('己卯');
+    expect('tianGan' in result.benGua.yaoList[0]).toBe(false);
+    expect('diZhi' in result.benGua.yaoList[0]).toBe(false);
     expect(result.benGua.yaoList[0].naYin).toBe('城头土');
     expect(result.zhiGua.yaoList.every(yao => Boolean(yao.naYin))).toBe(true);
     expect(result.huGua.yaoList.every(yao => !('naYin' in yao))).toBe(true);

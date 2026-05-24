@@ -53,8 +53,6 @@ export interface YaoData {
   position: number;         // 爻位 1-6（初爻到上爻）
   yaoValue: YaoValue;       // 原始爻值 6/7/8/9
   isMoving: boolean;        // 是否动爻
-  tianGan: string;          // 天干
-  diZhi: string;            // 地支
   naJia: string;            // 纳甲（天干+地支）
   naYin?: string;           // 纳音（本卦、之卦输出）
   wuXing: WuXing;           // 五行

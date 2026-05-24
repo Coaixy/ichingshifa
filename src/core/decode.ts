@@ -184,8 +184,6 @@ export function decodeGua(
       position: i + 1,
       yaoValue,
       isMoving,
-      tianGan,
-      diZhi,
       naJia,
       wuXing,
       liuQin,
