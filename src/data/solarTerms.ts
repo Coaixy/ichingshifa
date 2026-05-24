@@ -7,7 +7,7 @@ export const JIEQI_NAMES = [
   "谷雨",
   "立夏",
   "小满",
-  "芒種",
+  "芒种",
   "夏至",
   "小暑",
   "大暑",
@@ -25,14 +25,14 @@ export const JIEQI_NAMES = [
   "大寒",
   "立春",
   "雨水",
-  "惊蟄"
+  "惊蛰"
 ] as const;
 
 export const WANGZHUAI = [
   "旺",
   "相",
   "胎",
-  "沒",
+  "没",
   "死",
   "囚",
   "休",
@@ -59,7 +59,7 @@ export const JIEQI_GROUPS = {
   "立夏": [
     "立夏",
     "小满",
-    "芒種"
+    "芒种"
   ],
   "夏至": [
     "夏至",
@@ -89,6 +89,6 @@ export const JIEQI_GROUPS = {
   "立春": [
     "立春",
     "雨水",
-    "惊蟄"
+    "惊蛰"
   ]
 } as const;

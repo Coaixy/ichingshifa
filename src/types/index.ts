@@ -9,7 +9,7 @@ export type YaoValue = 6 | 7 | 8 | 9;
 export type YaoString = string;
 
 /** 八卦名称 */
-export type BaguaName = '乾' | '坎' | '坤' | '離' | '震' | '艮' | '巽' | '兌';
+export type BaguaName = '乾' | '坎' | '坤' | '离' | '震' | '艮' | '巽' | '兑';
 
 /** 五行 */
 export type WuXing = '金' | '木' | '水' | '火' | '土';
@@ -21,7 +21,7 @@ export type LiuQin = '父母' | '兄弟' | '官鬼' | '妻财' | '子孙';
 export type LiuShou = '青龙' | '朱雀' | '勾陈' | '腾蛇' | '白虎' | '玄武';
 
 /** 世应标记 */
-export type ShiYingMark = '初' | '二' | '三' | '四' | '五' | '六' | '世' | '應';
+export type ShiYingMark = '初' | '二' | '三' | '四' | '五' | '六' | '世' | '应';
 
 /** 卦位键 */
 export type GuaKey = 'benGua' | 'zhiGua' | 'huGua';

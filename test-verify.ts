@@ -49,7 +49,7 @@ for (let i = 5; i >= 0; i--) {
   const y = pan.benGua.yaoList[i];
   const yaoSymbol = y.yaoValue === 7 || y.yaoValue === 9 ? '▅▅▅▅▅' : '▅▅ ▅▅';
   const moving = y.isMoving ? ' ○' : '  ';
-  const shiying = y.shiYing === '世' || y.shiYing === '應' ? y.shiYing : '  ';
+  const shiying = y.shiYing === '世' || y.shiYing === '应' ? y.shiYing : '  ';
   console.log(`${posNames[i]}爻   ${y.naJia}${y.wuXing}  ${y.liuQin}  ${y.liuShou}  ${shiying}${moving} ${yaoSymbol}`);
 }
 console.log('');

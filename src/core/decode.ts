@@ -75,7 +75,7 @@ export function getGuaName(yaoString: YaoString): string {
 function findGuaByTrigrams(lower: string, upper: string): string | undefined {
   // 尝试所有可能的6爻组合
   const lowerCodes: Record<string, string> = {
-    '乾': '777', '兌': '778', '離': '787', '震': '788',
+    '乾': '777', '兑': '778', '离': '787', '震': '788',
     '巽': '877', '坎': '878', '艮': '887', '坤': '888',
   };
 
@@ -113,7 +113,7 @@ export function decodeGua(
 ): GuaPan {
   const guaName = getGuaName(yaoString);
   const palace = GUA_PALACE[guaName] || '乾';
-  const palaceLevel = GUA_PALACE_LEVEL[guaName] || '本宮';
+  const palaceLevel = GUA_PALACE_LEVEL[guaName] || '本宫';
   const palaceWuXing = (PALACE_WUXING[palace] || '金') as WuXing;
 
   // 获取纳甲数据
@@ -137,7 +137,7 @@ export function decodeGua(
   const upperNajia = upperNajiaRaw.map(parseNajia);
 
   // 获取世应排法
-  const shiYingStr = SHIYING_PATTERN[palaceLevel] || '初二應四五世';
+  const shiYingStr = SHIYING_PATTERN[palaceLevel] || '初二应四五世';
 
   // 获取六兽
   const liuShouList = getLiuShou(dayGanZhi[0]);
@@ -212,7 +212,7 @@ export function decodeGua(
 
   // 五星
   const wuXingStarIndex = Math.floor(Math.random() * 5); // 简化处理
-  const wuXingStar = WU_XING_STARS[wuXingStarIndex] || '鎮星';
+  const wuXingStar = WU_XING_STARS[wuXingStarIndex] || '镇星';
 
   // 查找伏神（本卦才需要）
   let fuShen: FuShenData[] | undefined;
@@ -349,30 +349,30 @@ function buildExplanation(
     const posNames = ['初', '二', '三', '四', '五', '上'];
     const yaoName = posNames[pos - 1];
     const yaoType = yaoString[pos - 1] === '9' ? '九' : '六';
-    return `動爻一根，主看【${yaoName}${yaoType}】：${yaoCi[pos - 1]}`;
+    return `动爻一根，主看【${yaoName}${yaoType}】：${yaoCi[pos - 1]}`;
   }
 
   if (dongCount === 2) {
-    return `動爻二根，以本卦二變爻辭占，以上爻為主。`;
+    return `动爻二根，以本卦二变爻辞占，以上爻为主。`;
   }
 
   if (dongCount === 3) {
-    return `動爻三根，占本卦【${benGuaName}】及之卦【${zhiGuaName}】彖辭。`;
+    return `动爻三根，占本卦【${benGuaName}】及之卦【${zhiGuaName}】彖辞。`;
   }
 
   if (dongCount === 4) {
-    return `動爻四根，以之卦【${zhiGuaName}】二不變爻占，以下爻為主。`;
+    return `动爻四根，以之卦【${zhiGuaName}】二不变爻占，以下爻为主。`;
   }
 
   if (dongCount === 5) {
-    return `動爻五根，以之卦【${zhiGuaName}】唯一不變爻占。`;
+    return `动爻五根，以之卦【${zhiGuaName}】唯一不变爻占。`;
   }
 
   if (dongCount === 6) {
     if (benGuaName === '乾' || benGuaName === '坤') {
-      return `六爻皆動，乾坤占用爻。`;
+      return `六爻皆动，乾坤占用爻。`;
     }
-    return `六爻皆動，占之卦【${zhiGuaName}】彖辭。`;
+    return `六爻皆动，占之卦【${zhiGuaName}】彖辞。`;
   }
 
   return '';
