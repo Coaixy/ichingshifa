@@ -258,12 +258,14 @@ interface YaoData {
   liuQin: string;
   liuShou: string;
   shiYing: string;
+  xingXiu?: string;
   suiXian?: SuiXianRange;
 }
 ```
 
 补充说明：
 
+- `yaoList` 会带 `xingXiu`，表示该爻对应的二十八宿全称（如 `室火猪`、`房日兔`）
 - `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
 - `huGua` 的 `yaoList` 默认不带 `naYin`
 - `yaoList` 的干支信息统一收敛在 `naJia`；若前端需要单独展示天干、地支，可再从 `naJia` 自行拆分
@@ -317,6 +319,7 @@ console.log({
     "liuQin": "父母",
     "liuShou": "勾陈",
     "shiYing": "初",
+    "xingXiu": "室火猪",
     "suiXian": {
       "startAge": 19,
       "endAge": 23

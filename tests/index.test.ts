@@ -9,7 +9,9 @@ import {
   getHuGua,
   countMovingYao,
   getNaYin,
+  DI_ZHI,
 } from '../src/index';
+import { GUA_XINGXIU } from '../src/data/xingxiuYaos';
 import { buildShenShaMap } from '../src/core/shensha';
 
 describe('起卦', () => {
@@ -118,6 +120,7 @@ describe('完整排盘', () => {
       expect(['金', '木', '水', '火', '土']).toContain(yao.wuXing);
       expect(['父母', '兄弟', '官鬼', '妻财', '子孙']).toContain(yao.liuQin);
       expect(['青龙', '朱雀', '勾陈', '腾蛇', '白虎', '玄武']).toContain(yao.liuShou);
+      expect(yao.xingXiu).toBeTruthy();
     });
     expect(result.benGua.yaoList.every(yao => Boolean(yao.suiXian))).toBe(true);
     expect(result.zhiGua.yaoList.every(yao => Boolean(yao.suiXian))).toBe(true);
@@ -236,6 +239,66 @@ describe('岁限', () => {
       { startAge: 39, endAge: 43 },
       { startAge: 34, endAge: 38 },
     ]);
+  });
+});
+
+describe('星宿入爻', () => {
+  test('既济卦六爻带二十八宿，且与纳甲地支对齐', () => {
+    const pan = decodePan('787878', {
+      year: 2024,
+      month: 4,
+      day: 15,
+      hour: 14,
+    });
+    const expected = GUA_XINGXIU[pan.benGua.guaName];
+
+    expect(expected).toBeTruthy();
+    expect(pan.benGua.yaoList.map(yao => yao.xingXiu)).toEqual(expected.map(item => ({
+      '角': '角木蛟',
+      '亢': '亢金龙',
+      '氐': '氐土貉',
+      '房': '房日兔',
+      '心': '心月狐',
+      '尾': '尾火虎',
+      '箕': '箕水豹',
+      '斗': '斗木獬',
+      '牛': '牛金牛',
+      '女': '女土蝠',
+      '虚': '虚日鼠',
+      '危': '危月燕',
+      '室': '室火猪',
+      '壁': '壁水貐',
+      '奎': '奎木狼',
+      '娄': '娄金狗',
+      '胃': '胃土雉',
+      '昴': '昴日鸡',
+      '毕': '毕月乌',
+      '觜': '觜火猴',
+      '参': '参水猿',
+      '井': '井木犴',
+      '鬼': '鬼金羊',
+      '柳': '柳土獐',
+      '星': '星日马',
+      '张': '张月鹿',
+      '翼': '翼火蛇',
+      '轸': '轸水蚓',
+    } as const)[item.slice(1) as keyof typeof import('../src/data/xingxiu').XINGXIU_FULL_NAMES]));
+    pan.benGua.yaoList.forEach((yao, index) => {
+      const diZhi = yao.naJia.slice(1);
+      expect(DI_ZHI).toContain(diZhi);
+      expect(expected[index].startsWith(diZhi)).toBe(true);
+    });
+  });
+
+  test('乾卦按初爻到上爻输出星宿', () => {
+    const gua = decodePan('777777', {
+      year: 2024,
+      month: 4,
+      day: 15,
+      hour: 14,
+    }).benGua;
+
+    expect(gua.yaoList.map(yao => yao.xingXiu)).toEqual(['房日兔', '尾火虎', '亢金龙', '心月狐', '氐土貉', '角木蛟']);
   });
 });
 

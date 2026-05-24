@@ -16,7 +16,8 @@ import {
 import { GUA_DESCRIPTIONS } from '../data/descriptions';
 import { LIU_SHOU, LIUSHOU_START } from '../data/liushou';
 import { LIUQIN_WUXING } from '../data/liuqin';
-import { WU_XING_STARS, XINGXIU_28 } from '../data/xingxiu';
+import { WU_XING_STARS, XINGXIU_28, XINGXIU_FULL_NAMES } from '../data/xingxiu';
+import { GUA_XINGXIU } from '../data/xingxiuYaos';
 import { getNaYin } from '../data/nayin';
 import { ganZhiToWuXing, wuXingToLiuQin } from '../utils/wuxing';
 import { rotateList } from '../utils/helpers';
@@ -144,6 +145,7 @@ export function decodeGua(
 
   // 构建6爻数据
   const yaoList: YaoData[] = [];
+  const xingXiuList = GUA_XINGXIU[guaName];
   let shenYaoIndex: number | undefined;
 
   for (let i = 0; i < 6; i++) {
@@ -189,6 +191,7 @@ export function decodeGua(
       liuQin,
       liuShou,
       shiYing,
+      xingXiu: xingXiuList?.[i] ? XINGXIU_FULL_NAMES[xingXiuList[i].slice(1) as keyof typeof XINGXIU_FULL_NAMES] : undefined,
     };
 
     // 纳音目前只挂在本卦、之卦；互卦不加，避免 JSON 误读为主要排盘信息
