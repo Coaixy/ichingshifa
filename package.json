@@ -1,7 +1,7 @@
 {
   "name": "iching-shifa",
   "version": "1.3.0",
-  "description": "周易六爻筮法 TypeScript 库 - I Ching Six Lines Divination",
+  "description": "周易六爻筮法 TypeScript 库，支持起卦、纳甲排盘、干支、旬空、神煞与纳音输出",
   "type": "module",
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
@@ -28,18 +28,22 @@
   "keywords": [
     "iching",
     "i-ching",
+    "zhouyi",
     "divination",
+    "liuyao",
+    "najia",
     "六爻",
     "周易",
-    "筮法",
-    "najia",
-    "纳甲"
+    "纳甲",
+    "卜卦",
+    "排盘",
+    "易经"
   ],
   "author": "",
-  "license": "MIT",
+  "license": "GPL-3.0-or-later",
   "repository": {
     "type": "git",
-    "url": "https://github.com/kentang2017/iching_shifa"
+    "url": "https://github.com/Coaixy/ichingshifa"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

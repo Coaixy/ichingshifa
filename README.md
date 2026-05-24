@@ -2,16 +2,39 @@
 
 [![npm](https://img.shields.io/npm/v/iching-shifa)](https://www.npmjs.com/package/iching-shifa)
 
-周易六爻筮法 TypeScript 库 - I Ching Six Lines Divination
+周易六爻筮法 TypeScript 库，提供起卦、纳甲排盘、干支换算、旬空、神煞、纳音等能力，适合命令行工具、前端排盘页面、服务端接口与研究脚本直接调用。
 
-## 功能
+## 项目简介
 
-- **大衍筮法起卦** - 模拟传统蓍草起卦
-- **时间起卦** - 按年月日时四柱起卦
-- **手动输入起卦** - 输入 6 位爻值字符串（6/7/8/9）
-- **纳甲排盘** - 完整六爻排盘（本卦 / 之卦 / 互卦、六亲、六兽、世应、伏神等）
-- **神煞排盘** - 按日支 / 月令 / 季节 / 日干计算神煞，并输出独立 JSON 字段
-- **纳音信息** - 本卦和之卦六爻输出 60 甲子纳音
+`iching-shifa` 以程序化方式整理六爻排盘流程，统一输出可直接消费的结构化数据。你可以把它当作：
+
+- 起卦工具：快速生成六爻字符串
+- 排盘引擎：把六爻字符串解码为本卦、之卦、互卦与各爻信息
+- 基础计算层：提供农历、四柱、旬空、节气、五行关系等能力
+- 上层应用底座：便于接入网页、桌面工具、机器人、AI 分析流程
+
+## 功能概览
+
+- 支持多种起卦方式：`dayan()`、`lueshifa()`、`manualQiGua()`、`threeNumberQiGua()`、`numberArrayQiGua()`、`timeQiGua()`
+- 支持完整六爻排盘：本卦、之卦、互卦、六亲、六兽、世应、伏神、旁伏神
+- 支持农历与干支相关计算：公历转农历、时柱、旬空、节气
+- 支持输出神煞与纳音信息，便于后续分析、检索或接入 UI
+- 提供完整 TypeScript 类型与部分常量导出，便于二次开发
+
+## 适用场景
+
+适合：
+
+- 构建六爻排盘网页或小工具
+- 为 AI、脚本或后端服务提供结构化排盘数据
+- 做术数研究、数据整理、规则验证或教学演示
+- 从 Python 版本迁移到 TypeScript / JavaScript 生态
+
+不适合：
+
+- 直接替代完整的断卦知识体系
+- 作为唯一结论来源的自动化决策系统
+- 需要高度可配置排盘流派差异的复杂专业系统
 
 ## 安装
 
@@ -23,72 +46,171 @@ npm install iching-shifa
 
 ## 快速开始
 
-```typescript
-import { dayan, manualQiGua, decodePan, getGuaName } from 'iching-shifa';
+```ts
+import { dayan, decodePan, getGuaName } from 'iching-shifa';
 
-// 大衍筮法随机起卦
-const yao = dayan();
-console.log(getGuaName(yao));
+const yaoString = dayan();
 
-// 手动输入起卦
-const yao2 = manualQiGua('787878');
+const pan = decodePan(yaoString, {
+  year: 2024,
+  month: 4,
+  day: 15,
+  hour: 14,
+  minute: 30,
+});
 
-// 完整排盘
-const result = decodePan(yao, {
+console.log('本卦：', getGuaName(yaoString));
+console.log('之卦：', pan.zhiGua.guaName);
+console.log('互卦：', pan.huGua.guaName);
+console.log('动爻数：', pan.dongYaoCount);
+console.log('断语：', pan.explanation);
+```
+
+## 使用流程建议
+
+最常见的调用顺序如下：
+
+1. 先通过任意起卦方法拿到 `yaoString`
+2. 再调用 `decodePan()` 生成完整排盘结果
+3. 如果只想做局部展示，可直接读取 `benGua`、`zhiGua`、`huGua` 或 `shenSha`
+4. 如果要自定义前端展示，可直接消费 `yaoList`、`fuShen`、`pangFuShen` 等结构
+
+```ts
+import { manualQiGua, decodePan } from 'iching-shifa';
+
+const yaoString = manualQiGua('787978');
+const pan = decodePan(yaoString, {
   year: 2024,
   month: 4,
   day: 15,
   hour: 14,
 });
 
-console.log(result.benGua.guaName);
-console.log(result.zhiGua.guaName);
+console.log(pan.benGua.yaoList);
+console.log(pan.shenSha);
 ```
+
+## 爻值约定
+
+六爻字符串按**初爻到上爻**的顺序排列，每一位只能是 `6`、`7`、`8`、`9`：
+
+| 值 | 含义 | 动静 |
+| --- | --- | --- |
+| `6` | 老阴 | 动爻，变阳 |
+| `7` | 少阳 | 静爻 |
+| `8` | 少阴 | 静爻 |
+| `9` | 老阳 | 动爻，变阴 |
+
+例如：
+
+- `777777` 表示乾卦六爻皆静
+- `787878` 表示既济卦六爻皆静
+- `787978` 表示革卦，且第 4 爻为动爻
+
+## 如何选择起卦方法
+
+| 方法 | 适用情况 |
+| --- | --- |
+| `dayan()` | 希望贴近传统大衍筮法的随机起卦 |
+| `lueshifa()` | 希望快速得到一个只有单动爻的结果 |
+| `manualQiGua()` | 已知六爻值，或要录入既有案例 |
+| `threeNumberQiGua()` | 依据三组数字取卦 |
+| `numberArrayQiGua()` | 依据一组数字与时辰取卦 |
+| `timeQiGua()` | 依据时间信息起卦，适合做时间盘入口 |
+
+如果你在做产品化接入，通常：
+
+- 有用户手填爻值时，用 `manualQiGua()`
+- 有按钮随机起卦时，用 `dayan()` 或 `lueshifa()`
+- 有“报数起卦”交互时，用 `threeNumberQiGua()` 或 `numberArrayQiGua()`
+- 有“按当前时间起卦”功能时，用 `timeQiGua()`
 
 ## API
 
-### 起卦
+### 起卦方法
 
 | 方法 | 说明 |
-|------|------|
+| --- | --- |
 | `dayan()` | 大衍筮法随机起卦 |
-| `manualQiGua(input)` | 手动输入 6 位爻值 |
-| `timeQiGua(options)` | 按时间起卦 |
-| `threeNumberQiGua(a, b, c)` | 三数起卦 |
-| `numberArrayQiGua(numbers)` | 数组起卦 |
+| `lueshifa()` | 略筮法起卦，结果恰好包含一个动爻 |
+| `manualQiGua(input)` | 手动输入 6 位爻值字符串 |
+| `threeNumberQiGua(num1, num2, num3)` | 三数起卦 |
+| `numberArrayQiGua(numbers, hourZhiIndex)` | 数字数组起卦，`hourZhiIndex` 为子=1、丑=2，依此类推至亥=12 |
+| `timeQiGua(year, month, day, hour, lunarMonth, lunarDay, yearZhi, hourZhi)` | 按时间起卦，需额外提供农历月日、年支、时支 |
+
+`timeQiGua()` 当前实现需要先换算农历和干支信息，通常可以这样配合使用：
+
+```ts
+import { solarToLunar, timeQiGua } from 'iching-shifa';
+
+const lunar = solarToLunar(2024, 4, 15, 14);
+
+const yaoString = timeQiGua(
+  2024,
+  4,
+  15,
+  14,
+  lunar.month,
+  lunar.day,
+  lunar.yearGanZhi.di,
+  lunar.hourGanZhi.di,
+);
+```
+
+### 卦象辅助
+
+| 方法 | 说明 |
+| --- | --- |
 | `getGuaName(yaoString)` | 获取卦名 |
 | `getZhiGua(yaoString)` | 计算之卦 |
 | `getHuGua(yaoString)` | 计算互卦 |
+| `isMovingYao(yaoValue)` | 判断单爻是否为动爻 |
 | `countMovingYao(yaoString)` | 统计动爻数量 |
-| `getMovingYaoPositions(yaoString)` | 获取动爻位置 |
+| `getMovingYaoPositions(yaoString)` | 获取动爻位置，返回 1-6 的数组 |
 
-### 排盘
+### 排盘与农历
 
 | 方法 | 说明 |
-|------|------|
+| --- | --- |
 | `decodePan(yaoString, options)` | 完整排盘，返回 `PanResult` |
-| `decodeGua(yaoString, dayGanZhi)` | 单卦解码 |
+| `decodeGua(yaoString, dayGanZhi, isZhiGua?, includeNaYin?)` | 单卦解码，返回 `GuaPan` |
+| `solarToLunar(year, month, day, hour?)` | 公历转农历，并返回四柱干支 |
+| `getHourGanZhi(dayGZ, hour)` | 根据日干支与小时计算时柱 |
+| `calcXunKong(dayGZ)` | 计算旬空 |
+| `getCurrentSolarTerm(year, month, day)` | 获取当天对应节气 |
 
-### 爻值
+### 数据与类型导出
 
-| 值 | 含义 | 动/静 |
-|----|------|-------|
-| 6 | 老阴 | 动爻（变阳） |
-| 7 | 少阳 | 静爻 |
-| 8 | 少阴 | 静爻 |
-| 9 | 老阳 | 动爻（变阴） |
+库还导出了常用常量与类型，便于上层应用直接复用：
 
-## JSON 输出结构
+- 常量：`TIAN_GAN`、`DI_ZHI`、`WU_XING`、`JIAZI_60`、`GUA64_ORDER`、`BAGUA_XIANG`、`LIU_SHOU`、`LIU_QIN`、`XINGXIU_28`、`WU_XING_STARS`、`JIEQI_NAMES`、`GUA_DESCRIPTIONS`、`NAYIN_60`
+- 工具：`getNaYin()`、`ganZhiToWuXing()`、`getWuXingRelation()`、`wuXingToLiuQin()`、`rotateList()`、`rotateListByIndex()`
+- 类型：`YaoString`、`YaoValue`、`GuaPan`、`PanResult`、`YaoData`、`FuShenData`、`GanZhi`、`ShenShaMap` 等
 
-```typescript
+## 输出结构
+
+`decodePan()` 返回的核心结构如下：
+
+```ts
 interface PanResult {
-  queryTime: { year, month, day, hour, minute };
-  ganZhiYear: { tian, di, gz };
-  ganZhiMonth: { tian, di, gz };
-  ganZhiDay: { tian, di, gz };
-  ganZhiHour: { tian, di, gz };
-  lunarDate: { year, month, day, isLeap };
-  solarTerm?: string;
+  queryTime: {
+    year: number;
+    month: number;
+    day: number;
+    hour: number;
+    minute?: number;
+  };
+  ganZhiYear: GanZhi;
+  ganZhiMonth: GanZhi;
+  ganZhiDay: GanZhi;
+  ganZhiHour: GanZhi;
+  lunarDate: {
+    year: number;
+    month: number;
+    day: number;
+    isLeap: boolean;
+  };
+  solarTerm: string;
   dayKong: string;
   hourKong: string;
   monthJian: string;
@@ -101,21 +223,12 @@ interface PanResult {
   explanation: string;
 }
 
-type ShenShaMap = Record<string, {
-  targetDiZhi: string[];
-  matches: {
-    guaKey: 'benGua' | 'zhiGua' | 'huGua';
-    position: number;
-    diZhi: string;
-    naJia: string;
-  }[];
-}>;
-
 interface GuaPan {
   guaName: string;
   palace: string;
   palaceWuXing: string;
   palaceLevel: string;
+  wuXingStar: string;
   yaoList: YaoData[];
   guaCi: string;
   yaoCi: string[];
@@ -140,6 +253,97 @@ interface YaoData {
 }
 ```
 
+补充说明：
+
+- `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
+- `huGua` 的 `yaoList` 默认不带 `naYin`
+- `fuShen`、`pangFuShen` 只在 `benGua` 上输出
+- `shenSha` 为独立字段，便于前端单独渲染或筛选
+- `explanation` 为按动爻数量生成的简要占断提示，不等同于完整断卦结论
+
+## 输出示例
+
+```ts
+import { decodePan } from 'iching-shifa';
+
+const pan = decodePan('787978', {
+  year: 2024,
+  month: 4,
+  day: 15,
+  hour: 14,
+  minute: 30,
+});
+
+console.log({
+  benGua: pan.benGua.guaName,
+  zhiGua: pan.zhiGua.guaName,
+  huGua: pan.huGua.guaName,
+  dayGanZhi: pan.ganZhiDay.gz,
+  dayKong: pan.dayKong,
+  shenShaKeys: Object.keys(pan.shenSha),
+  firstYao: pan.benGua.yaoList[0],
+});
+```
+
+可能得到类似结果：
+
+```json
+{
+  "benGua": "既济",
+  "zhiGua": "革",
+  "huGua": "未济",
+  "dayGanZhi": "己酉",
+  "dayKong": "寅卯",
+  "shenShaKeys": ["驿马", "桃花", "华盖", "天医", "天喜", "天马", "天乙贵人", "禄神", "文昌"],
+  "firstYao": {
+    "position": 1,
+    "yaoValue": 7,
+    "isMoving": false,
+    "tianGan": "己",
+    "diZhi": "卯",
+    "naJia": "己卯",
+    "naYin": "城头土",
+    "wuXing": "木",
+    "liuQin": "父母",
+    "liuShou": "勾陈",
+    "shiYing": "初"
+  }
+}
+```
+
+## 术语说明
+
+| 术语 | 说明 |
+| --- | --- |
+| 本卦 | 原始卦象 |
+| 之卦 | 动爻变化后的卦象 |
+| 互卦 | 由中间四爻推得的卦象 |
+| 纳甲 | 将天干地支配入六爻 |
+| 六亲 | 父母、官鬼、妻财、兄弟、子孙 |
+| 六兽 | 青龙、朱雀、勾陈、腾蛇、白虎、玄武 |
+| 世应 | 主客双方所对应的爻位标记 |
+| 伏神 | 隐伏于卦中的辅助信息 |
+| 旁伏神 | 由对宫纯卦体系排出的辅助伏神信息 |
+| 旬空 | 按干支旬推得的空亡 |
+| 神煞 | 按日支、月令、季节、日干等规则推算的附加信息 |
+
+## 仓库结构
+
+```text
+ichingshifa/
+├── package.json
+├── README.md
+├── src/
+│   ├── index.ts
+│   ├── core/
+│   ├── data/
+│   ├── utils/
+│   └── types/
+├── tests/
+├── docs/
+└── dist/
+```
+
 ## 开发
 
 ```bash
@@ -152,14 +356,14 @@ bun test
 
 - 筮法原理：[`docs/theory.md`](docs/theory.md)
 - 古占例：[`docs/example.md`](docs/example.md)
-- 占诀：[`docs/text.md`](docs/text.md)
-- 更新日志：[`docs/update.md`](docs/update.md)
-- 神煞资料：[`六爻常见神煞排法.md`](六爻常见神煞排法.md)
+- 占诀资料：[`docs/text.md`](docs/text.md)
 
-## 许可
+## 鸣谢
 
-MIT License
+- 感谢 [kentang2017/ichingshifa](https://github.com/kentang2017/ichingshifa) 提供的实现思路与项目参考。
 
-## 相关项目
+## 许可证
 
-- [ichingshifa](https://github.com/kentang2017/iching_shifa) - Python 原版库
+本项目采用 [GNU General Public License v3.0 or later](https://www.gnu.org/licenses/gpl-3.0.html) 开源协议发布。
+
+如你分发本项目或其修改版本，请遵循 GPL 的对应条款并保留相应许可证文本。
