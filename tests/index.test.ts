@@ -121,6 +121,7 @@ describe('完整排盘', () => {
       expect(['父母', '兄弟', '官鬼', '妻财', '子孙']).toContain(yao.liuQin);
       expect(['青龙', '朱雀', '勾陈', '腾蛇', '白虎', '玄武']).toContain(yao.liuShou);
       expect(yao.xingXiu).toBeTruthy();
+      expect(yao.suoBo).toBeTruthy();
     });
     expect(result.benGua.yaoList.every(yao => Boolean(yao.suiXian))).toBe(true);
     expect(result.zhiGua.yaoList.every(yao => Boolean(yao.suiXian))).toBe(true);
@@ -299,6 +300,17 @@ describe('星宿入爻', () => {
     }).benGua;
 
     expect(gua.yaoList.map(yao => yao.xingXiu)).toEqual(['房日兔', '尾火虎', '亢金龙', '心月狐', '氐土貉', '角木蛟']);
+  });
+
+  test('锁泊按星宿五行长生地起山宫顺排到爻支', () => {
+    const gua = decodePan('777777', {
+      year: 2024,
+      month: 4,
+      day: 15,
+      hour: 14,
+    }).benGua;
+
+    expect(gua.yaoList.map(yao => yao.suoBo)).toEqual(['湖', '山', '田', '火', '刀', '田']);
   });
 });
 

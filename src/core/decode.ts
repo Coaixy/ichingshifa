@@ -16,7 +16,14 @@ import {
 import { GUA_DESCRIPTIONS } from '../data/descriptions';
 import { LIU_SHOU, LIUSHOU_START } from '../data/liushou';
 import { LIUQIN_WUXING } from '../data/liuqin';
-import { WU_XING_STARS, XINGXIU_28, XINGXIU_FULL_NAMES } from '../data/xingxiu';
+import {
+  WU_XING_STARS,
+  XINGXIU_28,
+  XINGXIU_FULL_NAMES,
+  XINGXIU_WUXING,
+  WUXING_CHANGSHENG,
+  SUOBO_GONG_ORDER,
+} from '../data/xingxiu';
 import { GUA_XINGXIU } from '../data/xingxiuYaos';
 import { getNaYin } from '../data/nayin';
 import { ganZhiToWuXing, wuXingToLiuQin } from '../utils/wuxing';
@@ -103,6 +110,28 @@ function getLiuShou(dayGan: string): LiuShou[] {
   return rotateList(shouList, startShou);
 }
 
+function getSuoBo(xingXiu?: string, diZhi?: string): string | undefined {
+  if (!xingXiu || !diZhi) {
+    return undefined;
+  }
+
+  const xingXiuKey = xingXiu[0] as keyof typeof XINGXIU_WUXING;
+  const xingXiuWuXing = XINGXIU_WUXING[xingXiuKey];
+  if (!xingXiuWuXing) {
+    return undefined;
+  }
+
+  const changShengDi = WUXING_CHANGSHENG[xingXiuWuXing];
+  const startZhiIndex = DI_ZHI.indexOf(changShengDi);
+  const targetZhiIndex = DI_ZHI.findIndex(item => item === diZhi);
+  if (startZhiIndex === -1 || targetZhiIndex === -1) {
+    return undefined;
+  }
+
+  const gongIndex = (targetZhiIndex - startZhiIndex + DI_ZHI.length) % DI_ZHI.length;
+  return SUOBO_GONG_ORDER[gongIndex];
+}
+
 /**
  * 解码单个卦的纳甲
  */
@@ -182,6 +211,10 @@ export function decodeGua(
       }
     }
 
+    const xingXiu = xingXiuList?.[i]
+      ? XINGXIU_FULL_NAMES[xingXiuList[i].slice(1) as keyof typeof XINGXIU_FULL_NAMES]
+      : undefined;
+
     const yaoData: YaoData = {
       position: i + 1,
       yaoValue,
@@ -191,7 +224,8 @@ export function decodeGua(
       liuQin,
       liuShou,
       shiYing,
-      xingXiu: xingXiuList?.[i] ? XINGXIU_FULL_NAMES[xingXiuList[i].slice(1) as keyof typeof XINGXIU_FULL_NAMES] : undefined,
+      xingXiu,
+      suoBo: getSuoBo(xingXiu, diZhi),
     };
 
     // 纳音目前只挂在本卦、之卦；互卦不加，避免 JSON 误读为主要排盘信息

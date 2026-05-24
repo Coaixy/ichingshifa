@@ -259,6 +259,7 @@ interface YaoData {
   liuShou: string;
   shiYing: string;
   xingXiu?: string;
+  suoBo?: string;
   suiXian?: SuiXianRange;
 }
 ```
@@ -266,6 +267,7 @@ interface YaoData {
 补充说明：
 
 - `yaoList` 会带 `xingXiu`，表示该爻对应的二十八宿全称（如 `室火猪`、`房日兔`）
+- `yaoList` 会带 `suoBo`，按该爻 `xingXiu` 所属五行的长生地起山宫，顺排到该爻地支所得宫位
 - `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
 - `huGua` 的 `yaoList` 默认不带 `naYin`
 - `yaoList` 的干支信息统一收敛在 `naJia`；若前端需要单独展示天干、地支，可再从 `naJia` 自行拆分

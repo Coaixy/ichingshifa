@@ -59,8 +59,9 @@ export interface YaoData {
   liuQin: LiuQin;           // 六亲
   liuShou: LiuShou;         // 六兽
   shiYing: ShiYingMark;     // 世应标记
-  suiXian?: SuiXianRange;   // 岁限区间（本卦、之卦输出）
   xingXiu?: string;         // 二十八宿全称
+  suoBo?: string;           // 锁泊宫位
+  suiXian?: SuiXianRange;   // 岁限区间（本卦、之卦输出）
 }
 
 /** 伏神数据 */
