@@ -1,6 +1,6 @@
 /**
  * 神煞排法
- * 依起卦日支、月令、日干，對照卦中各爻納支後輸出命中結果
+ * 依起卦日支、月令、日干，对照卦中各爻纳支后输出命中结果
  */
 
 import { DI_ZHI } from '../data/jiazi';
@@ -56,7 +56,7 @@ function getTianYi(monthZhi: string): string[] {
     return [];
   }
 
-  // 天醫依月令退一位，直接用地支循環回推即可
+  // 天医依月令退一位，直接用地支循环回推即可
   return [DI_ZHI[(index + DI_ZHI.length - 1) % DI_ZHI.length]];
 }
 
@@ -141,7 +141,7 @@ function getShenShaTargets(dayGan: string, dayZhi: string, monthZhi: string): Re
 }
 
 /**
- * 將神煞規則套回本卦、之卦、互卦
+ * 将神煞规则套回本卦、之卦、互卦
  */
 export function buildShenShaMap(
   dayGan: string,
@@ -156,7 +156,7 @@ export function buildShenShaMap(
     const targetDiZhi = targets[name];
     const matches: ShenShaMatch[] = [];
 
-    // 只比對卦中納支，命中就記錄卦位與爻位，方便 JSON 直接查閱
+    // 只比对卦中纳支，命中就记录卦位与爻位，方便 JSON 直接查阅
     for (const gua of guaList) {
       for (const yao of gua.yaoList) {
         if (targetDiZhi.includes(yao.diZhi)) {

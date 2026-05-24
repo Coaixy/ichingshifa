@@ -1,4 +1,4 @@
-// 60甲子納音
+// 60甲子纳音
 
 export const NAYIN_60 = {
   "甲子": "海中金",
@@ -64,7 +64,7 @@ export const NAYIN_60 = {
 } as const;
 
 /**
- * 查詢干支納音
+ * 查询干支纳音
  */
 export function getNaYin(ganZhi: string): string | undefined {
   return (NAYIN_60 as Record<string, string>)[ganZhi];

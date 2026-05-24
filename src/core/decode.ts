@@ -193,7 +193,7 @@ export function decodeGua(
       shiYing,
     };
 
-    // 納音目前只掛在本卦、之卦；互卦不加，避免 JSON 誤讀為主要排盤信息
+    // 纳音目前只挂在本卦、之卦；互卦不加，避免 JSON 误读为主要排盘信息
     if (includeNaYin) {
       yaoData.naYin = getNaYin(naJia);
     }
@@ -240,7 +240,7 @@ export function decodeGua(
 
 /**
  * 排伏神
- * 以本卦所屬宮的本宮純卦逐爻排入伏神，不再只補缺失的六親
+ * 以本卦所属宫的本宫纯卦逐爻排入伏神，不再只补缺失的六亲
  */
 function findFuShen(
   yaoList: YaoData[],
@@ -252,7 +252,7 @@ function findFuShen(
 
 /**
  * 排旁伏神
- * 以首宮卦的對宮純卦作為伏神來源，保留本卦同位爻作飛神
+ * 以首宫卦的对宫纯卦作为伏神来源，保留本卦同位爻作飞神
  */
 function findPangFuShen(
   yaoList: YaoData[],
@@ -265,14 +265,14 @@ function findPangFuShen(
 }
 
 /**
- * 依指定宮的純卦生成伏神底盤
+ * 依指定宫的纯卦生成伏神底盘
  */
 function buildFuShenFromPalace(
   yaoList: YaoData[],
   sourcePalace: string,
   sourcePalaceWuXing: WuXing
 ): FuShenData[] {
-  // 取得來源宮純卦納甲，純卦六爻即為伏神來源
+  // 取得来源宫纯卦纳甲，纯卦六爻即为伏神来源
   const pureCode = PALACE_PURE_CODE[sourcePalace] || '777777';
   const pureLowerTrigram = CODE_TO_BAGUA[pureCode.slice(0, 3)] || '乾';
   const pureUpperTrigram = CODE_TO_BAGUA[pureCode.slice(3, 6)] || '乾';
@@ -294,7 +294,7 @@ function buildFuShenFromPalace(
 
   const fuShenList: FuShenData[] = [];
 
-  // 逐爻排入伏神；飛神固定取本卦同一位置的爻
+  // 逐爻排入伏神；飞神固定取本卦同一位置的爻
   for (let i = 0; i < 6; i++) {
     let najiaData: [number, number, number];
     if (i < 3) {

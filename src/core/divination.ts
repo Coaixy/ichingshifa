@@ -93,7 +93,7 @@ export function timeQiGua(
   hourZhi: string
 ): YaoString {
   // 年支数值 (子=1, 丑=2, ...)
-  const diZhiArr = [...DI_ZHI];
+  const diZhiArr: readonly string[] = DI_ZHI;
   const yzCode = diZhiArr.indexOf(yearZhi) + 1;
   const hzCode = diZhiArr.indexOf(hourZhi) + 1;
 

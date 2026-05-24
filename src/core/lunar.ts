@@ -102,7 +102,7 @@ export function getHourGanZhi(dayGZ: string, hour: number): GanZhi {
 
   // 计算时干
   const startGan = wuShuDun[dayGan];
-  const tianGanArr = [...TIAN_GAN];
+  const tianGanArr: readonly string[] = TIAN_GAN;
   const startGanIndex = tianGanArr.indexOf(startGan);
   const hourGanIndex = (startGanIndex + zhiIndex) % 10;
 
@@ -117,8 +117,8 @@ export function getHourGanZhi(dayGZ: string, hour: number): GanZhi {
  * 计算旬空
  */
 export function calcXunKong(dayGZ: string): string {
-  const tianGanArr = [...TIAN_GAN];
-  const diZhiArr = [...DI_ZHI];
+  const tianGanArr: readonly string[] = TIAN_GAN;
+  const diZhiArr: readonly string[] = DI_ZHI;
   const ganIndex = tianGanArr.indexOf(dayGZ[0]);
   const zhiIndex = diZhiArr.indexOf(dayGZ[1]);
 
