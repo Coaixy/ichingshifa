@@ -86,6 +86,7 @@ export type {
   GanZhi,
   YaoData,
   FuShenData,
+  SuiXianRange,
   GuaPan,
   DivinationOptions,
   PanResult,

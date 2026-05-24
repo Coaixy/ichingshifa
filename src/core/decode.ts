@@ -321,6 +321,64 @@ function buildFuShenFromPalace(
   return fuShenList;
 }
 
+const SUIXIAN_WUXING_NUMBER: Record<WuXing, number> = {
+  '水': 1,
+  '火': 2,
+  '木': 3,
+  '金': 4,
+  '土': 5,
+};
+
+const YANG_GAN = new Set(['甲', '丙', '戊', '庚', '壬']);
+
+function findShiYingYao(yaoList: YaoData[], mark: '世' | '应'): YaoData {
+  const yao = yaoList.find(item => item.shiYing === mark);
+  if (!yao) {
+    throw new Error(`未找到${mark}爻`);
+  }
+  return yao;
+}
+
+function buildSuiXianOrder(startPosition: number, direction: 1 | -1): number[] {
+  const order: number[] = [];
+  let position = startPosition;
+
+  for (let i = 0; i < 6; i++) {
+    order.push(position);
+    position = ((position - 1 + direction + 6) % 6) + 1;
+  }
+
+  return order;
+}
+
+function applySuiXian(benGua: GuaPan, zhiGua: GuaPan): void {
+  const benShiYao = findShiYingYao(benGua.yaoList, '世');
+  const benYingYao = findShiYingYao(benGua.yaoList, '应');
+  const zhiShiYao = findShiYingYao(zhiGua.yaoList, '世');
+
+  const shiGanWuXing = ganZhiToWuXing(benShiYao.naJia[0]);
+  const yingGanWuXing = ganZhiToWuXing(benYingYao.naJia[0]);
+  const startAge = SUIXIAN_WUXING_NUMBER[shiGanWuXing] + SUIXIAN_WUXING_NUMBER[yingGanWuXing];
+  const direction: 1 | -1 = YANG_GAN.has(benShiYao.naJia[0]) ? 1 : -1;
+  const segments = [
+    { startPosition: benShiYao.position, yaoList: benGua.yaoList },
+    { startPosition: zhiShiYao.position, yaoList: zhiGua.yaoList },
+  ];
+
+  let currentAge = startAge;
+
+  for (const segment of segments) {
+    for (const position of buildSuiXianOrder(segment.startPosition, direction)) {
+      const yao = segment.yaoList[position - 1];
+      yao.suiXian = {
+        startAge: currentAge,
+        endAge: currentAge + 4,
+      };
+      currentAge += 5;
+    }
+  }
+}
+
 /**
  * 生成动爻解释
  */
@@ -411,6 +469,7 @@ export function decodePan(
     lunar.dayGanZhi.di,
     lunar.monthGanZhi.di
   );
+  applySuiXian(benGua, zhiGua);
 
   // 动爻解释
   const dongYaoCount = countMovingYao(yaoString);

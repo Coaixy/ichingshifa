@@ -228,6 +228,11 @@ interface PanResult {
   explanation: string;
 }
 
+interface SuiXianRange {
+  startAge: number;
+  endAge: number;
+}
+
 interface GuaPan {
   guaName: string;
   palace: string;
@@ -253,6 +258,7 @@ interface YaoData {
   liuQin: string;
   liuShou: string;
   shiYing: string;
+  suiXian?: SuiXianRange;
 }
 ```
 
@@ -263,6 +269,8 @@ interface YaoData {
 - `yaoList` 的干支信息统一收敛在 `naJia`；若前端需要单独展示天干、地支，可再从 `naJia` 自行拆分
 - `fuShen`、`pangFuShen` 只在 `benGua` 上输出，每项保留伏神自身信息（含 `fuNaYin`）与宿主爻位；其中 `hostPosition` 与 `yaoList.position` 一致，均为 1 到 6 的爻位
 - `shenSha` 为独立字段，按“神煞名 -> 对应地支数组”输出，便于前端单独渲染或筛选
+- `benGua`、`zhiGua` 的 `yaoList` 会融合 `suiXian`：先从本卦世爻起排满本卦六爻，再从变卦世爻续排六爻；每爻 5 年，顺逆全程只看本卦世爻天干
+- `huGua` 的 `yaoList` 不带 `suiXian`
 - `explanation` 为按动爻数量生成的简要占断提示，不等同于完整断卦结论
 
 ## 输出示例
@@ -308,7 +316,11 @@ console.log({
     "wuXing": "木",
     "liuQin": "父母",
     "liuShou": "勾陈",
-    "shiYing": "初"
+    "shiYing": "初",
+    "suiXian": {
+      "startAge": 19,
+      "endAge": 23
+    }
   }
 }
 ```

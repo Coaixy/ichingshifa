@@ -59,6 +59,7 @@ export interface YaoData {
   liuQin: LiuQin;           // 六亲
   liuShou: LiuShou;         // 六兽
   shiYing: ShiYingMark;     // 世应标记
+  suiXian?: SuiXianRange;   // 岁限区间（本卦、之卦输出）
   xingXiu?: string;         // 二十八宿
 }
 
@@ -69,6 +70,12 @@ export interface FuShenData {
   fuNaYin: string;           // 伏神纳音
   fuWuXing: WuXing;          // 伏神五行
   hostPosition: number;      // 飞神（宿主）爻位，范围 1-6
+}
+
+/** 岁限区间 */
+export interface SuiXianRange {
+  startAge: number;          // 起始年龄
+  endAge: number;            // 结束年龄
 }
 
 /** 神煞映射 */

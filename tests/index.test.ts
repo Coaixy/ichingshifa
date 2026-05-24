@@ -119,6 +119,9 @@ describe('完整排盘', () => {
       expect(['父母', '兄弟', '官鬼', '妻财', '子孙']).toContain(yao.liuQin);
       expect(['青龙', '朱雀', '勾陈', '腾蛇', '白虎', '玄武']).toContain(yao.liuShou);
     });
+    expect(result.benGua.yaoList.every(yao => Boolean(yao.suiXian))).toBe(true);
+    expect(result.zhiGua.yaoList.every(yao => Boolean(yao.suiXian))).toBe(true);
+    expect(result.huGua.yaoList.every(yao => !('suiXian' in yao))).toBe(true);
   });
 
   test('本卦和之卦六爻带纳音，互卦不带纳音', () => {
@@ -134,6 +137,25 @@ describe('完整排盘', () => {
     expect(result.benGua.guaCi).toBeTruthy();
     expect(result.benGua.yaoCi).toHaveLength(6);
     expect(result.benGua.tuanCi).toBeTruthy();
+  });
+
+  test('岁限按本卦世应起限并接续到变卦', () => {
+    expect(result.benGua.yaoList[2].suiXian).toEqual({
+      startAge: 10,
+      endAge: 14,
+    });
+    expect(result.benGua.yaoList[5].suiXian).toEqual({
+      startAge: 25,
+      endAge: 29,
+    });
+    expect(result.zhiGua.yaoList[2].suiXian).toEqual({
+      startAge: 40,
+      endAge: 44,
+    });
+    expect(result.zhiGua.yaoList[3].suiXian).toEqual({
+      startAge: 65,
+      endAge: 69,
+    });
   });
 
   test('伏神和旁伏神分别完整排入六爻', () => {
@@ -189,6 +211,34 @@ describe('神煞', () => {
   });
 });
 
+describe('岁限', () => {
+  test('逆排时进入变卦后仍沿用本卦世干方向', () => {
+    const result = decodePan('666666', {
+      year: 2024,
+      month: 4,
+      day: 15,
+      hour: 14,
+    });
+
+    expect(result.benGua.yaoList.map(yao => yao.suiXian)).toEqual([
+      { startAge: 29, endAge: 33 },
+      { startAge: 24, endAge: 28 },
+      { startAge: 19, endAge: 23 },
+      { startAge: 14, endAge: 18 },
+      { startAge: 9, endAge: 13 },
+      { startAge: 4, endAge: 8 },
+    ]);
+    expect(result.zhiGua.yaoList.map(yao => yao.suiXian)).toEqual([
+      { startAge: 59, endAge: 63 },
+      { startAge: 54, endAge: 58 },
+      { startAge: 49, endAge: 53 },
+      { startAge: 44, endAge: 48 },
+      { startAge: 39, endAge: 43 },
+      { startAge: 34, endAge: 38 },
+    ]);
+  });
+});
+
 describe('JSON输出样例', () => {
   test('完整JSON结构', () => {
     const result = decodePan('787978', {
@@ -208,6 +258,8 @@ describe('JSON输出样例', () => {
     expect(result).toHaveProperty('zhiGua');
     expect(result).toHaveProperty('huGua');
     expect(result).toHaveProperty('shenSha');
+    expect(result.benGua.yaoList[0]).toHaveProperty('suiXian');
+    expect(result.zhiGua.yaoList[0]).toHaveProperty('suiXian');
     expect(Object.keys(result.shenSha)).toHaveLength(9);
     expect(result).toHaveProperty('explanation');
   });
