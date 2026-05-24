@@ -4,19 +4,7 @@
  */
 
 import { DI_ZHI } from '../data/jiazi';
-import type {
-  GuaKey,
-  ShenShaMap,
-  ShenShaMatch,
-  ShenShaName,
-  ShenShaResult,
-  YaoData,
-} from '../types';
-
-export interface ShenShaGuaContext {
-  guaKey: GuaKey;
-  yaoList: Array<Pick<YaoData, 'position' | 'naJia' | 'diZhi'>>;
-}
+import type { ShenShaMap, ShenShaName } from '../types';
 
 const SHENSHA_ORDER: ShenShaName[] = [
   '驿马',
@@ -141,39 +129,14 @@ function getShenShaTargets(dayGan: string, dayZhi: string, monthZhi: string): Re
 }
 
 /**
- * 将神煞规则套回本卦、之卦、互卦
+ * 按日干、日支、月令生成神煞对应地支表
  */
-export function buildShenShaMap(
-  dayGan: string,
-  dayZhi: string,
-  monthZhi: string,
-  guaList: ShenShaGuaContext[]
-): ShenShaMap {
+export function buildShenShaMap(dayGan: string, dayZhi: string, monthZhi: string): ShenShaMap {
   const targets = getShenShaTargets(dayGan, dayZhi, monthZhi);
   const result = {} as ShenShaMap;
 
   for (const name of SHENSHA_ORDER) {
-    const targetDiZhi = targets[name];
-    const matches: ShenShaMatch[] = [];
-
-    // 只比对卦中纳支，命中就记录卦位与爻位，方便 JSON 直接查阅
-    for (const gua of guaList) {
-      for (const yao of gua.yaoList) {
-        if (targetDiZhi.includes(yao.diZhi)) {
-          matches.push({
-            guaKey: gua.guaKey,
-            position: yao.position,
-            diZhi: yao.diZhi,
-            naJia: yao.naJia,
-          });
-        }
-      }
-    }
-
-    result[name] = {
-      targetDiZhi: [...targetDiZhi],
-      matches,
-    } as ShenShaResult;
+    result[name] = [...targets[name]];
   }
 
   return result;

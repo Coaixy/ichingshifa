@@ -192,6 +192,11 @@ const yaoString = timeQiGua(
 `decodePan()` 返回的核心结构如下：
 
 ```ts
+type ShenShaMap = Record<
+  '驿马' | '桃花' | '华盖' | '天医' | '天喜' | '天马' | '天乙贵人' | '禄神' | '文昌',
+  string[]
+>;
+
 interface PanResult {
   queryTime: {
     year: number;
@@ -257,8 +262,8 @@ interface YaoData {
 
 - `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
 - `huGua` 的 `yaoList` 默认不带 `naYin`
-- `fuShen`、`pangFuShen` 只在 `benGua` 上输出
-- `shenSha` 为独立字段，便于前端单独渲染或筛选
+- `fuShen`、`pangFuShen` 只在 `benGua` 上输出，每项保留伏神自身信息（含 `fuNaYin`）与宿主爻位；其中 `hostPosition` 与 `yaoList.position` 一致，均为 1 到 6 的爻位
+- `shenSha` 为独立字段，按“神煞名 -> 对应地支数组”输出，便于前端单独渲染或筛选
 - `explanation` 为按动爻数量生成的简要占断提示，不等同于完整断卦结论
 
 ## 输出示例
@@ -280,7 +285,7 @@ console.log({
   huGua: pan.huGua.guaName,
   dayGanZhi: pan.ganZhiDay.gz,
   dayKong: pan.dayKong,
-  shenShaKeys: Object.keys(pan.shenSha),
+  yiMa: pan.shenSha.驿马,
   firstYao: pan.benGua.yaoList[0],
 });
 ```
@@ -294,7 +299,7 @@ console.log({
   "huGua": "未济",
   "dayGanZhi": "己酉",
   "dayKong": "寅卯",
-  "shenShaKeys": ["驿马", "桃花", "华盖", "天医", "天喜", "天马", "天乙贵人", "禄神", "文昌"],
+  "yiMa": ["寅"],
   "firstYao": {
     "position": 1,
     "yaoValue": 7,

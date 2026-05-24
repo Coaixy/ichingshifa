@@ -18,7 +18,7 @@ import { LIU_SHOU, LIUSHOU_START } from '../data/liushou';
 import { LIUQIN_WUXING } from '../data/liuqin';
 import { WU_XING_STARS, XINGXIU_28 } from '../data/xingxiu';
 import { getNaYin } from '../data/nayin';
-import { ganZhiToWuXing, getWuXingRelation, wuXingToLiuQin } from '../utils/wuxing';
+import { ganZhiToWuXing, wuXingToLiuQin } from '../utils/wuxing';
 import { rotateList } from '../utils/helpers';
 import { getZhiGua, getHuGua, countMovingYao, getMovingYaoPositions } from './divination';
 import { solarToLunar, calcXunKong, getCurrentSolarTerm } from './lunar';
@@ -314,11 +314,9 @@ function buildFuShenFromPalace(
     fuShenList.push({
       fuLiuQin: liuQin,
       fuNaJia: naJia,
+      fuNaYin: getNaYin(naJia),
       fuWuXing: wuXing,
-      hostYaoIndex: i,
-      hostNaJia: hostYao.naJia,
-      feiWuXing: hostYao.wuXing,
-      relation: getWuXingRelation(wuXing, hostYao.wuXing),
+      hostPosition: hostYao.position,
     });
   }
 
@@ -413,12 +411,7 @@ export function decodePan(
   const shenSha = buildShenShaMap(
     lunar.dayGanZhi.tian,
     lunar.dayGanZhi.di,
-    lunar.monthGanZhi.di,
-    [
-      { guaKey: 'benGua', yaoList: benGua.yaoList },
-      { guaKey: 'zhiGua', yaoList: zhiGua.yaoList },
-      { guaKey: 'huGua', yaoList: huGua.yaoList },
-    ]
+    lunar.monthGanZhi.di
   );
 
   // 动爻解释

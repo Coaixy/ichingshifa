@@ -81,8 +81,6 @@ export type {
   LiuShou,
   ShiYingMark,
   ShenShaName,
-  ShenShaMatch,
-  ShenShaResult,
   ShenShaMap,
   WuXingRelation,
   GanZhi,

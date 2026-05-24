@@ -139,20 +139,20 @@ describe('完整排盘', () => {
     const pangFuShen = result.benGua.pangFuShen || [];
 
     expect(fuShen).toHaveLength(6);
-    fuShen.forEach((item) => {
-      const hostYao = result.benGua.yaoList[item.hostYaoIndex];
-      expect(item.hostNaJia).toBe(hostYao.naJia);
-      expect(item.feiWuXing).toBe(hostYao.wuXing);
+    fuShen.forEach((item, index) => {
+      expect(item.hostPosition).toBe(index + 1);
+      expect(item.fuNaYin).toBeTruthy();
     });
     expect(fuShen[0].fuNaJia).toBe('戊寅');
+    expect(fuShen[0].fuNaYin).toBe('城头土');
 
     expect(pangFuShen).toHaveLength(6);
-    pangFuShen.forEach((item) => {
-      const hostYao = result.benGua.yaoList[item.hostYaoIndex];
-      expect(item.hostNaJia).toBe(hostYao.naJia);
-      expect(item.feiWuXing).toBe(hostYao.wuXing);
+    pangFuShen.forEach((item, index) => {
+      expect(item.hostPosition).toBe(index + 1);
+      expect(item.fuNaYin).toBeTruthy();
     });
     expect(pangFuShen[0].fuNaJia).toBe('己卯');
+    expect(pangFuShen[0].fuNaYin).toBe('城头土');
     expect(pangFuShen[0].fuLiuQin).toBe('父母');
 
     expect(result.zhiGua.fuShen).toBeUndefined();
@@ -164,47 +164,7 @@ describe('完整排盘', () => {
 
 describe('神煞', () => {
   test('按规则生成独立 map', () => {
-    const yao = (position: number, diZhi: string, naJia: string) => ({
-      position,
-      diZhi,
-      naJia,
-    });
-
-    const shenSha = buildShenShaMap('甲', '申', '寅', [
-      {
-        guaKey: 'benGua',
-        yaoList: [
-          yao(1, '寅', '甲寅'),
-          yao(2, '酉', '乙酉'),
-          yao(3, '辰', '丙辰'),
-          yao(4, '午', '丁午'),
-          yao(5, '子', '戊子'),
-          yao(6, '卯', '己卯'),
-        ],
-      },
-      {
-        guaKey: 'zhiGua',
-        yaoList: [
-          yao(1, '丑', '甲丑'),
-          yao(2, '未', '乙未'),
-          yao(3, '巳', '丙巳'),
-          yao(4, '申', '丁申'),
-          yao(5, '亥', '戊亥'),
-          yao(6, '戌', '己戌'),
-        ],
-      },
-      {
-        guaKey: 'huGua',
-        yaoList: [
-          yao(1, '酉', '甲酉'),
-          yao(2, '寅', '乙寅'),
-          yao(3, '未', '丙未'),
-          yao(4, '寅', '丁寅'),
-          yao(5, '辰', '戊辰'),
-          yao(6, '巳', '己巳'),
-        ],
-      },
-    ]);
+    const shenSha = buildShenShaMap('甲', '申', '寅');
 
     expect(Object.keys(shenSha)).toEqual([
       '驿马',
@@ -217,23 +177,13 @@ describe('神煞', () => {
       '禄神',
       '文昌',
     ]);
-    expect(shenSha.驿马).toEqual({
-      targetDiZhi: ['寅'],
-      matches: [
-        { guaKey: 'benGua', position: 1, diZhi: '寅', naJia: '甲寅' },
-        { guaKey: 'huGua', position: 2, diZhi: '寅', naJia: '乙寅' },
-        { guaKey: 'huGua', position: 4, diZhi: '寅', naJia: '丁寅' },
-      ],
-    });
-    expect(shenSha.天医.targetDiZhi).toEqual(['丑']);
-    expect(shenSha.天喜.targetDiZhi).toEqual(['戌']);
-    expect(shenSha.天马.targetDiZhi).toEqual(['午']);
-    expect(shenSha.天乙贵人.targetDiZhi).toEqual(['丑', '未']);
-    expect(shenSha.禄神.targetDiZhi).toEqual(['寅']);
-    expect(shenSha.文昌.matches).toEqual([
-      { guaKey: 'zhiGua', position: 3, diZhi: '巳', naJia: '丙巳' },
-      { guaKey: 'huGua', position: 6, diZhi: '巳', naJia: '己巳' },
-    ]);
+    expect(shenSha.驿马).toEqual(['寅']);
+    expect(shenSha.天医).toEqual(['丑']);
+    expect(shenSha.天喜).toEqual(['戌']);
+    expect(shenSha.天马).toEqual(['午']);
+    expect(shenSha.天乙贵人).toEqual(['丑', '未']);
+    expect(shenSha.禄神).toEqual(['寅']);
+    expect(shenSha.文昌).toEqual(['巳']);
   });
 });
 

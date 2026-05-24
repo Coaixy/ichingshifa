@@ -68,29 +68,13 @@ export interface YaoData {
 export interface FuShenData {
   fuLiuQin: LiuQin;          // 伏神六亲
   fuNaJia: string;           // 伏神纳甲
+  fuNaYin: string;           // 伏神纳音
   fuWuXing: WuXing;          // 伏神五行
-  hostYaoIndex: number;      // 飞神（宿主）爻位
-  hostNaJia: string;         // 飞神纳甲
-  feiWuXing: WuXing;         // 飞神五行
-  relation: WuXingRelation;  // 飞伏关系
-}
-
-/** 神煞命中项 */
-export interface ShenShaMatch {
-  guaKey: GuaKey;            // 命中的卦
-  position: number;          // 爻位 1-6
-  diZhi: string;             // 命中地支
-  naJia: string;             // 纳甲
-}
-
-/** 单一神煞结果 */
-export interface ShenShaResult {
-  targetDiZhi: string[];     // 对应地支
-  matches: ShenShaMatch[];   // 命中的爻位
+  hostPosition: number;      // 飞神（宿主）爻位，范围 1-6
 }
 
 /** 神煞映射 */
-export type ShenShaMap = Record<ShenShaName, ShenShaResult>;
+export type ShenShaMap = Record<ShenShaName, string[]>;
 
 /** 单卦排盘结果 */
 export interface GuaPan {
