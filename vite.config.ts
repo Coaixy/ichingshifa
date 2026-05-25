@@ -11,10 +11,10 @@ export default defineConfig({
       fileName: (format) => `index.${format === 'es' ? 'js' : 'cjs'}`,
     },
     rollupOptions: {
-      external: ['lunar-javascript'],
+      external: ['tyme4ts'],
       output: {
         globals: {
-          'lunar-javascript': 'Lunar',
+          tyme4ts: 'Tyme',
         },
       },
     },

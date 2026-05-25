@@ -1,10 +1,9 @@
 /**
  * 农历适配层
- * 使用 lunar-javascript 库进行公历农历转换
+ * 使用 tyme4ts 库进行公历农历转换
  */
 
-// @ts-ignore - lunar-javascript 没有类型定义
-import { Solar, Lunar } from 'lunar-javascript';
+import { SolarDay, SolarTime } from 'tyme4ts';
 import type { GanZhi } from '../types';
 import { TIAN_GAN, DI_ZHI, LIUJIA_XUNKONG } from '../data/jiazi';
 
@@ -42,26 +41,30 @@ export function solarToLunar(
     adjustedDay = date.getDate();
   }
 
-  const solar = Solar.fromYmd(adjustedYear, adjustedMonth, adjustedDay);
-  const lunar = solar.getLunar();
+  const solar = SolarDay.fromYmd(adjustedYear, adjustedMonth, adjustedDay);
+  const lunar = solar.getLunarDay();
+  const lunarMonth = lunar.getLunarMonth();
+  const sixtyCycleDay = solar.getSixtyCycleDay();
 
   // 获取四柱
-  const yearGZ = lunar.getYearInGanZhi();
-  const monthGZ = lunar.getMonthInGanZhi();
-  const dayGZ = lunar.getDayInGanZhi();
-
-  // 时柱计算
-  const hourGZ = getHourGanZhi(dayGZ, hour);
+  const yearGZ = sixtyCycleDay.getYear().getName();
+  const monthGZ = sixtyCycleDay.getMonth().getName();
+  const dayGZ = sixtyCycleDay.getSixtyCycle().getName();
+  const hourGZ = SolarTime
+    .fromYmdHms(year, month, day, hour, 0, 0)
+    .getSixtyCycleHour()
+    .getSixtyCycle()
+    .getName();
 
   return {
-    year: lunar.getYear(),
-    month: Math.abs(lunar.getMonth()),
+    year: lunarMonth.getLunarYear().getYear(),
+    month: Math.abs(lunarMonth.getMonthWithLeap()),
     day: lunar.getDay(),
-    isLeap: lunar.getMonth() < 0,
+    isLeap: lunarMonth.isLeap(),
     yearGanZhi: parseGanZhi(yearGZ),
     monthGanZhi: parseGanZhi(monthGZ),
     dayGanZhi: parseGanZhi(dayGZ),
-    hourGanZhi: hourGZ,
+    hourGanZhi: parseGanZhi(hourGZ),
   };
 }
 
@@ -137,13 +140,8 @@ export function calcXunKong(dayGZ: string): string {
  */
 export function getCurrentSolarTerm(year: number, month: number, day: number): string {
   try {
-    const solar = Solar.fromYmd(year, month, day);
-    // lunar-javascript 使用 getPrevJieQi 获取前一个节气
-    const prevJieQi = solar.getPrevJieQi();
-    if (prevJieQi) {
-      return prevJieQi.getName();
-    }
-    return '';
+    const solar = SolarDay.fromYmd(year, month, day);
+    return solar.getTerm().getName();
   } catch {
     return '';
   }

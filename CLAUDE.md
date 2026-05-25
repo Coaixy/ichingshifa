@@ -63,7 +63,7 @@ ichingshifa/
 ## 依赖
 
 主要依赖：
-- `lunar-javascript` - 农历、干支与节气计算
+- `tyme4ts` - 农历、干支与节气计算
 - `typescript` - 类型系统与编译
 - `vite` - 构建输出
 - `vitest` - 测试
