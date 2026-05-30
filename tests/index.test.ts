@@ -3,6 +3,7 @@ import {
   dayan,
   lueshifa,
   manualQiGua,
+  decodeGua,
   decodePan,
   getGuaName,
   getZhiGua,
@@ -87,6 +88,21 @@ describe('变卦计算', () => {
       '父母',
       '子孙',
       '兄弟',
+    ]);
+  });
+
+  test('直接解之卦时用原卦宫五行计算六亲', () => {
+    const zhiGua = decodeGua('667767', '己酉', true);
+
+    expect(zhiGua.guaName).toBe('乾');
+    expect(zhiGua.palaceWuXing).toBe('金');
+    expect(zhiGua.yaoList.map(yao => [yao.wuXing, yao.liuQin])).toEqual([
+      ['水', '官鬼'],
+      ['木', '父母'],
+      ['土', '子孙'],
+      ['火', '兄弟'],
+      ['金', '妻财'],
+      ['土', '子孙'],
     ]);
   });
 

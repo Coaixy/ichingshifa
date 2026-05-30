@@ -271,6 +271,7 @@ interface YaoData {
 - `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
 - `huGua` 的 `yaoList` 默认不带 `naYin`
 - `decodePan()` 输出的 `zhiGua.yaoList[].liuQin` 按本卦所属宫五行计算；`zhiGua.palace` 与 `zhiGua.palaceWuXing` 仍保留之卦自身所属宫信息
+- 直接调用 `decodeGua(yaoString, dayGanZhi, true)` 解之卦时，`yaoString` 应传原始本卦爻串；若先调用 `getZhiGua()` 得到已变静爻串，则需用 `liuQinPalaceWuXing` 传入本卦宫五行
 - `yaoList` 的干支信息统一收敛在 `naJia`；若前端需要单独展示天干、地支，可再从 `naJia` 自行拆分
 - `fuShen`、`pangFuShen` 只在 `benGua` 上输出，每项保留伏神自身信息（含 `fuNaYin`）与宿主爻位；其中 `hostPosition` 与 `yaoList.position` 一致，均为 1 到 6 的爻位
 - `shenSha` 为独立字段，按“神煞名 -> 对应地支数组”输出，便于前端单独渲染或筛选

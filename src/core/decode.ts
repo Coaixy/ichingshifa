@@ -110,6 +110,17 @@ function getLiuShou(dayGan: string): LiuShou[] {
   return rotateList(shouList, startShou);
 }
 
+/**
+ * 根据六爻字符串取得所属宫五行。
+ * @param yaoString 六爻字符串，可包含动爻
+ * @returns 该卦所属宫的五行
+ */
+function getPalaceWuXingByYaoString(yaoString: YaoString): WuXing {
+  const guaName = getGuaName(yaoString);
+  const palace = GUA_PALACE[guaName] || '乾';
+  return (PALACE_WUXING[palace] || '金') as WuXing;
+}
+
 function getSuoBo(xingXiu?: string, diZhi?: string): string | undefined {
   if (!xingXiu || !diZhi) {
     return undefined;
@@ -136,9 +147,9 @@ function getSuoBo(xingXiu?: string, diZhi?: string): string | undefined {
  * 解码单个卦的纳甲。
  * @param yaoString 六爻字符串，从初爻到上爻
  * @param dayGanZhi 日干支，用于排六兽
- * @param isZhiGua 是否按之卦处理；之卦不排伏神
+ * @param isZhiGua 是否按之卦处理；传入含动爻的本卦爻串时会先变出之卦
  * @param includeNaYin 是否输出纳音
- * @param liuQinPalaceWuXing 六亲计算所用的宫五行；缺省使用当前卦自身所属宫五行
+ * @param liuQinPalaceWuXing 六亲计算所用的宫五行；传入已变静爻串时需用它指定本卦宫五行
  * @returns 单卦排盘结果
  */
 export function decodeGua(
@@ -148,14 +159,19 @@ export function decodeGua(
   includeNaYin: boolean = true,
   liuQinPalaceWuXing?: WuXing
 ): GuaPan {
-  const guaName = getGuaName(yaoString);
+  const shouldResolveZhiGua = isZhiGua && /[69]/.test(yaoString);
+  const decodeYaoString = shouldResolveZhiGua ? getZhiGua(yaoString) : yaoString;
+  const guaName = getGuaName(decodeYaoString);
   const palace = GUA_PALACE[guaName] || '乾';
   const palaceLevel = GUA_PALACE_LEVEL[guaName] || '本宫';
   const palaceWuXing = (PALACE_WUXING[palace] || '金') as WuXing;
-  const liuQinBaseWuXing = liuQinPalaceWuXing || palaceWuXing;
+  const sourcePalaceWuXing = shouldResolveZhiGua
+    ? getPalaceWuXingByYaoString(yaoString)
+    : palaceWuXing;
+  const liuQinBaseWuXing = liuQinPalaceWuXing || sourcePalaceWuXing;
 
   // 获取纳甲数据
-  const staticYao = yaoString.replace(/9/g, '7').replace(/6/g, '8');
+  const staticYao = decodeYaoString.replace(/9/g, '7').replace(/6/g, '8');
   const lowerTrigram = CODE_TO_BAGUA[staticYao.slice(0, 3)] || '乾';
   const upperTrigram = CODE_TO_BAGUA[staticYao.slice(3, 6)] || '乾';
 
@@ -186,7 +202,7 @@ export function decodeGua(
   let shenYaoIndex: number | undefined;
 
   for (let i = 0; i < 6; i++) {
-    const yaoValue = parseInt(yaoString[i], 10) as YaoValue;
+    const yaoValue = parseInt(decodeYaoString[i], 10) as YaoValue;
     const isMoving = yaoValue === 6 || yaoValue === 9;
 
     // 获取纳甲
@@ -503,8 +519,7 @@ export function decodePan(
   const dayGZ = lunar.dayGanZhi.gz;
   const benGua = decodeGua(yaoString, dayGZ, false);
 
-  const zhiYaoString = getZhiGua(yaoString);
-  const zhiGua = decodeGua(zhiYaoString, dayGZ, true, true, benGua.palaceWuXing);
+  const zhiGua = decodeGua(yaoString, dayGZ, true);
 
   const huYaoString = getHuGua(yaoString);
   const huGua = decodeGua(huYaoString, dayGZ, true, false);
