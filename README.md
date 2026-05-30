@@ -173,7 +173,7 @@ const yaoString = timeQiGua(
 | 方法 | 说明 |
 | --- | --- |
 | `decodePan(yaoString, options)` | 完整排盘，返回 `PanResult` |
-| `decodeGua(yaoString, dayGanZhi, isZhiGua?, includeNaYin?)` | 单卦解码，返回 `GuaPan` |
+| `decodeGua(yaoString, dayGanZhi, isZhiGua?, includeNaYin?, liuQinPalaceWuXing?)` | 单卦解码，返回 `GuaPan` |
 | `solarToLunar(year, month, day, hour?)` | 公历转农历，并返回四柱干支 |
 | `getHourGanZhi(dayGZ, hour)` | 根据日干支与小时计算时柱 |
 | `calcXunKong(dayGZ)` | 计算旬空 |
@@ -270,6 +270,7 @@ interface YaoData {
 - `yaoList` 会带 `suoBo`，按该爻 `xingXiu` 所属五行的长生地起山宫，顺排到该爻地支所得宫位
 - `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
 - `huGua` 的 `yaoList` 默认不带 `naYin`
+- `decodePan()` 输出的 `zhiGua.yaoList[].liuQin` 按本卦所属宫五行计算；`zhiGua.palace` 与 `zhiGua.palaceWuXing` 仍保留之卦自身所属宫信息
 - `yaoList` 的干支信息统一收敛在 `naJia`；若前端需要单独展示天干、地支，可再从 `naJia` 自行拆分
 - `fuShen`、`pangFuShen` 只在 `benGua` 上输出，每项保留伏神自身信息（含 `fuNaYin`）与宿主爻位；其中 `hostPosition` 与 `yaoList.position` 一致，均为 1 到 6 的爻位
 - `shenSha` 为独立字段，按“神煞名 -> 对应地支数组”输出，便于前端单独渲染或筛选

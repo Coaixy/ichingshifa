@@ -133,18 +133,26 @@ function getSuoBo(xingXiu?: string, diZhi?: string): string | undefined {
 }
 
 /**
- * 解码单个卦的纳甲
+ * 解码单个卦的纳甲。
+ * @param yaoString 六爻字符串，从初爻到上爻
+ * @param dayGanZhi 日干支，用于排六兽
+ * @param isZhiGua 是否按之卦处理；之卦不排伏神
+ * @param includeNaYin 是否输出纳音
+ * @param liuQinPalaceWuXing 六亲计算所用的宫五行；缺省使用当前卦自身所属宫五行
+ * @returns 单卦排盘结果
  */
 export function decodeGua(
   yaoString: YaoString,
   dayGanZhi: string,
   isZhiGua: boolean = false,
-  includeNaYin: boolean = true
+  includeNaYin: boolean = true,
+  liuQinPalaceWuXing?: WuXing
 ): GuaPan {
   const guaName = getGuaName(yaoString);
   const palace = GUA_PALACE[guaName] || '乾';
   const palaceLevel = GUA_PALACE_LEVEL[guaName] || '本宫';
   const palaceWuXing = (PALACE_WUXING[palace] || '金') as WuXing;
+  const liuQinBaseWuXing = liuQinPalaceWuXing || palaceWuXing;
 
   // 获取纳甲数据
   const staticYao = yaoString.replace(/9/g, '7').replace(/6/g, '8');
@@ -195,7 +203,7 @@ export function decodeGua(
     const naJia = tianGan + diZhi;
 
     // 六亲
-    const liuQin = wuXingToLiuQin(wuXing, palaceWuXing) as LiuQin;
+    const liuQin = wuXingToLiuQin(wuXing, liuQinBaseWuXing) as LiuQin;
 
     // 六兽
     const liuShou = liuShouList[i];
@@ -496,7 +504,7 @@ export function decodePan(
   const benGua = decodeGua(yaoString, dayGZ, false);
 
   const zhiYaoString = getZhiGua(yaoString);
-  const zhiGua = decodeGua(zhiYaoString, dayGZ, true);
+  const zhiGua = decodeGua(zhiYaoString, dayGZ, true, true, benGua.palaceWuXing);
 
   const huYaoString = getHuGua(yaoString);
   const huGua = decodeGua(huYaoString, dayGZ, true, false);

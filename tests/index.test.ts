@@ -68,6 +68,28 @@ describe('变卦计算', () => {
     expect(getZhiGua('696969')).toBe('787878');
   });
 
+  test('之卦六亲按本卦所属宫五行计算', () => {
+    const result = decodePan('666666', {
+      year: 2024,
+      month: 4,
+      day: 15,
+      hour: 14,
+    });
+
+    expect(result.benGua.guaName).toBe('坤');
+    expect(result.benGua.palaceWuXing).toBe('土');
+    expect(result.zhiGua.guaName).toBe('乾');
+    expect(result.zhiGua.palaceWuXing).toBe('金');
+    expect(result.zhiGua.yaoList.map(yao => yao.liuQin)).toEqual([
+      '妻财',
+      '官鬼',
+      '兄弟',
+      '父母',
+      '子孙',
+      '兄弟',
+    ]);
+  });
+
   test('互卦（取2-4爻为下，3-5爻为上）', () => {
     expect(getHuGua('777777')).toBe('777777');
     expect(getHuGua('888888')).toBe('888888');
