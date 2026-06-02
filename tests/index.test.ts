@@ -228,6 +228,49 @@ describe('完整排盘', () => {
   });
 });
 
+describe('世应定位', () => {
+  test('四世卦本卦应爻落初爻', () => {
+    const yao = manualQiGua('788797');
+
+    expect(getGuaName(yao)).toBe('无妄');
+    expect(getGuaName(getZhiGua(yao))).toBe('噬嗑');
+
+    const pan = decodePan(yao, {
+      year: 2024,
+      month: 4,
+      day: 15,
+      hour: 14,
+      minute: 0,
+    });
+
+    expect(pan.benGua.yaoList.map(y => ({
+      position: y.position,
+      yaoValue: y.yaoValue,
+      shiYing: y.shiYing,
+    }))).toEqual([
+      { position: 1, yaoValue: 7, shiYing: '应' },
+      { position: 2, yaoValue: 8, shiYing: '二' },
+      { position: 3, yaoValue: 8, shiYing: '三' },
+      { position: 4, yaoValue: 7, shiYing: '世' },
+      { position: 5, yaoValue: 9, shiYing: '五' },
+      { position: 6, yaoValue: 7, shiYing: '六' },
+    ]);
+
+    expect(pan.zhiGua.yaoList.map(y => ({
+      position: y.position,
+      yaoValue: y.yaoValue,
+      shiYing: y.shiYing,
+    }))).toEqual([
+      { position: 1, yaoValue: 7, shiYing: '初' },
+      { position: 2, yaoValue: 8, shiYing: '应' },
+      { position: 3, yaoValue: 8, shiYing: '三' },
+      { position: 4, yaoValue: 7, shiYing: '四' },
+      { position: 5, yaoValue: 8, shiYing: '世' },
+      { position: 6, yaoValue: 7, shiYing: '六' },
+    ]);
+  });
+});
+
 describe('神煞', () => {
   test('按规则生成独立 map', () => {
     const shenSha = buildShenShaMap('甲', '申', '寅');

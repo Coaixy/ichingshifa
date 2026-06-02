@@ -307,12 +307,12 @@ console.log({
 
 ```json
 {
-  "benGua": "既济",
-  "zhiGua": "革",
+  "benGua": "革",
+  "zhiGua": "既济",
   "huGua": "未济",
   "dayGanZhi": "己酉",
   "dayKong": "寅卯",
-  "yiMa": ["寅"],
+  "yiMa": ["亥"],
   "firstYao": {
     "position": 1,
     "yaoValue": 7,
@@ -320,13 +320,13 @@ console.log({
     "naJia": "己卯",
     "naYin": "城头土",
     "wuXing": "木",
-    "liuQin": "父母",
-    "liuShou": "勾陈",
-    "shiYing": "初",
+    "liuQin": "子孙",
+    "liuShou": "腾蛇",
+    "shiYing": "应",
     "xingXiu": "室火猪",
     "suiXian": {
-      "startAge": 19,
-      "endAge": 23
+      "startAge": 22,
+      "endAge": 26
     }
   }
 }
