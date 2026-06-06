@@ -311,16 +311,16 @@ function findFuShen(
 
 /**
  * 排旁伏神
- * 以首宫卦的对宫纯卦作为伏神来源，保留本卦同位爻作飞神
+ * 旁伏神纳甲取本卦对宫纯卦，但六亲仍以本卦所属宫五行为基准
  */
 function findPangFuShen(
   yaoList: YaoData[],
   palace: string
 ): FuShenData[] {
   const oppositePalace = OPPOSITE_PALACE[palace] || '坤';
-  const oppositeWuXing = (PALACE_WUXING[oppositePalace] || '土') as WuXing;
+  const benGuaPalaceWuXing = (PALACE_WUXING[palace] || '土') as WuXing;
 
-  return buildFuShenFromPalace(yaoList, oppositePalace, oppositeWuXing);
+  return buildFuShenFromPalace(yaoList, oppositePalace, benGuaPalaceWuXing);
 }
 
 /**
@@ -329,7 +329,7 @@ function findPangFuShen(
 function buildFuShenFromPalace(
   yaoList: YaoData[],
   sourcePalace: string,
-  sourcePalaceWuXing: WuXing
+  liuQinPalaceWuXing: WuXing
 ): FuShenData[] {
   // 取得来源宫纯卦纳甲，纯卦六爻即为伏神来源
   const pureCode = PALACE_PURE_CODE[sourcePalace] || '777777';
@@ -367,7 +367,7 @@ function buildFuShenFromPalace(
     const wuXing = (WU_XING[najiaData[2]] || '金') as WuXing;
     const naJia = tianGan + diZhi;
 
-    const liuQin = wuXingToLiuQin(wuXing, sourcePalaceWuXing) as LiuQin;
+    const liuQin = wuXingToLiuQin(wuXing, liuQinPalaceWuXing) as LiuQin;
     const hostYao = yaoList[i];
 
     fuShenList.push({

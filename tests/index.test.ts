@@ -219,7 +219,7 @@ describe('完整排盘', () => {
     });
     expect(pangFuShen[0].fuNaJia).toBe('己卯');
     expect(pangFuShen[0].fuNaYin).toBe('城头土');
-    expect(pangFuShen[0].fuLiuQin).toBe('父母');
+    expect(pangFuShen[0].fuLiuQin).toBe('子孙');
 
     expect(result.zhiGua.fuShen).toBeUndefined();
     expect(result.huGua.fuShen).toBeUndefined();
