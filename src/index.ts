@@ -39,6 +39,12 @@ export {
   getGuaName,
 } from './core/decode';
 
+// 青衣星宿算法
+export {
+  calculateQingyiXingXiu,
+  getQingyiSuoBo,
+} from './core/qingyiXingxiu';
+
 // 农历/干支
 export {
   solarToLunar,
@@ -91,3 +97,9 @@ export type {
   DivinationOptions,
   PanResult,
 } from './types';
+
+export type {
+  QingyiSuoBoKey,
+  QingyiXingXiuYao,
+  QingyiXingXiuResult,
+} from './core/qingyiXingxiu';

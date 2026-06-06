@@ -10,9 +10,9 @@ import {
   getHuGua,
   countMovingYao,
   getNaYin,
-  DI_ZHI,
+  calculateQingyiXingXiu,
+  getQingyiSuoBo,
 } from '../src/index';
-import { GUA_XINGXIU } from '../src/data/xingxiuYaos';
 import { buildShenShaMap } from '../src/core/shensha';
 
 describe('起卦', () => {
@@ -325,54 +325,21 @@ describe('岁限', () => {
 });
 
 describe('星宿入爻', () => {
-  test('既济卦六爻带二十八宿，且与纳甲地支对齐', () => {
+  test('默认排盘使用青衣算法输出星宿和锁泊', () => {
     const pan = decodePan('787878', {
       year: 2024,
       month: 4,
       day: 15,
       hour: 14,
     });
-    const expected = GUA_XINGXIU[pan.benGua.guaName];
+    const diZhiList = pan.benGua.yaoList.map(yao => yao.naJia.slice(1));
+    const expected = calculateQingyiXingXiu('787878', diZhiList);
 
-    expect(expected).toBeTruthy();
-    expect(pan.benGua.yaoList.map(yao => yao.xingXiu)).toEqual(expected.map(item => ({
-      '角': '角木蛟',
-      '亢': '亢金龙',
-      '氐': '氐土貉',
-      '房': '房日兔',
-      '心': '心月狐',
-      '尾': '尾火虎',
-      '箕': '箕水豹',
-      '斗': '斗木獬',
-      '牛': '牛金牛',
-      '女': '女土蝠',
-      '虚': '虚日鼠',
-      '危': '危月燕',
-      '室': '室火猪',
-      '壁': '壁水貐',
-      '奎': '奎木狼',
-      '娄': '娄金狗',
-      '胃': '胃土雉',
-      '昴': '昴日鸡',
-      '毕': '毕月乌',
-      '觜': '觜火猴',
-      '参': '参水猿',
-      '井': '井木犴',
-      '鬼': '鬼金羊',
-      '柳': '柳土獐',
-      '星': '星日马',
-      '张': '张月鹿',
-      '翼': '翼火蛇',
-      '轸': '轸水蚓',
-    } as const)[item.slice(1) as keyof typeof import('../src/data/xingxiu').XINGXIU_FULL_NAMES]));
-    pan.benGua.yaoList.forEach((yao, index) => {
-      const diZhi = yao.naJia.slice(1);
-      expect(DI_ZHI).toContain(diZhi);
-      expect(expected[index].startsWith(diZhi)).toBe(true);
-    });
+    expect(pan.benGua.yaoList.map(yao => yao.xingXiu)).toEqual(expected.primaryXingXiu);
+    expect(pan.benGua.yaoList.map(yao => yao.suoBo)).toEqual(expected.yaoList.map(yao => yao.suoBo));
   });
 
-  test('乾卦按初爻到上爻输出星宿', () => {
+  test('乾卦按青衣算法从初爻到上爻输出星宿', () => {
     const gua = decodePan('777777', {
       year: 2024,
       month: 4,
@@ -380,10 +347,10 @@ describe('星宿入爻', () => {
       hour: 14,
     }).benGua;
 
-    expect(gua.yaoList.map(yao => yao.xingXiu)).toEqual(['房日兔', '尾火虎', '亢金龙', '心月狐', '氐土貉', '角木蛟']);
+    expect(gua.yaoList.map(yao => yao.xingXiu)).toEqual(['柳土獐', '张月鹿', '井木犴', '星日马', '鬼金羊', '参水猿']);
   });
 
-  test('锁泊按星宿五行长生地起山宫顺排到爻支', () => {
+  test('乾卦锁泊按青衣锁泊表输出', () => {
     const gua = decodePan('777777', {
       year: 2024,
       month: 4,
@@ -391,7 +358,28 @@ describe('星宿入爻', () => {
       hour: 14,
     }).benGua;
 
-    expect(gua.yaoList.map(yao => yao.suoBo)).toEqual(['湖', '山', '田', '火', '刀', '田']);
+    expect(gua.yaoList.map(yao => yao.suoBo)).toEqual(['井', '草', '刀', '山', '园', '田']);
+  });
+});
+
+describe('青衣星宿算法提取', () => {
+  test('锁泊按星宿第二字与爻支查青衣锁泊表', () => {
+    expect(getQingyiSuoBo('子', '柳土獐')).toBe('井');
+    expect(getQingyiSuoBo('寅', '张月鹿')).toBe('草');
+    expect(getQingyiSuoBo('辰', '井木犴')).toBe('刀');
+  });
+
+  test('乾卦按青衣宫位层级与世应推排星宿', () => {
+    const result = calculateQingyiXingXiu('777777', ['子', '寅', '辰', '午', '申', '戌']);
+
+    expect(result.yaoCode).toBe('111111');
+    expect(result.palace).toBe('乾');
+    expect(result.palaceLevelIndex).toBe(0);
+    expect(result.shiPosition).toBe(6);
+    expect(result.yingPosition).toBe(3);
+    expect(result.primaryXingXiu).toEqual(['柳土獐', '张月鹿', '井木犴', '星日马', '鬼金羊', '参水猿']);
+    expect(result.secondaryXingXiu).toEqual(['房日兔', '尾火虎', '亢金龙', '心月狐', '氐土貉', '角木蛟']);
+    expect(result.yaoList.map(yao => yao.suoBo)).toEqual(['井', '草', '刀', '山', '园', '田']);
   });
 });
 

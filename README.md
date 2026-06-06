@@ -179,13 +179,20 @@ const yaoString = timeQiGua(
 | `calcXunKong(dayGZ)` | 计算旬空 |
 | `getCurrentSolarTerm(year, month, day)` | 获取当天对应节气 |
 
+### 青衣星宿算法
+
+| 方法 | 说明 |
+| --- | --- |
+| `calculateQingyiXingXiu(yaoString, diZhiList?)` | 提取自青衣排盘页面的星宿推排算法，按宫位、宫内层级与世应位置生成两套星宿 |
+| `getQingyiSuoBo(diZhi, xingXiu)` | 按青衣锁泊表，由爻支与星宿第二字直接查锁泊 |
+
 ### 数据与类型导出
 
 库还导出了常用常量与类型，便于上层应用直接复用：
 
 - 常量：`TIAN_GAN`、`DI_ZHI`、`WU_XING`、`JIAZI_60`、`GUA64_ORDER`、`BAGUA_XIANG`、`LIU_SHOU`、`LIU_QIN`、`XINGXIU_28`、`WU_XING_STARS`、`JIEQI_NAMES`、`GUA_DESCRIPTIONS`、`NAYIN_60`
 - 工具：`getNaYin()`、`ganZhiToWuXing()`、`getWuXingRelation()`、`wuXingToLiuQin()`、`rotateList()`、`rotateListByIndex()`
-- 类型：`YaoString`、`YaoValue`、`GuaPan`、`PanResult`、`YaoData`、`FuShenData`、`GanZhi`、`ShenShaMap` 等
+- 类型：`YaoString`、`YaoValue`、`GuaPan`、`PanResult`、`YaoData`、`FuShenData`、`GanZhi`、`ShenShaMap`、`QingyiXingXiuResult` 等
 
 ## 输出结构
 
@@ -266,8 +273,8 @@ interface YaoData {
 
 补充说明：
 
-- `yaoList` 会带 `xingXiu`，表示该爻对应的二十八宿全称（如 `室火猪`、`房日兔`）
-- `yaoList` 会带 `suoBo`，按该爻 `xingXiu` 所属五行的长生地起山宫，顺排到该爻地支所得宫位
+- `yaoList` 会带 `xingXiu`，按青衣星宿算法由卦的宫位、宫内层级与世应位置推排二十八宿全称
+- `yaoList` 会带 `suoBo`，按青衣锁泊表由该爻纳甲地支与 `xingXiu` 第二字查得
 - `benGua`、`zhiGua` 的 `yaoList` 会带 `naYin`
 - `huGua` 的 `yaoList` 默认不带 `naYin`
 - `decodePan()` 输出的 `zhiGua.yaoList[].liuQin` 按本卦所属宫五行计算；`zhiGua.palace` 与 `zhiGua.palaceWuXing` 仍保留之卦自身所属宫信息
